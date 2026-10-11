@@ -2,18 +2,18 @@
 
 A free, installable **Progressive Web App (PWA)** to track every rupee spent on your **car or bike** in India — fuel, insurance, PUC, RTO taxes, tolls, service, parking, challans — plus a **vehicle loan tracker** with EMI schedules and foreclosure simulation.
 
-| Item | Choice |
-|---|---|
-| Frontend | React 18 + TypeScript + Vite |
-| PWA | vite-plugin-pwa (Workbox) |
-| Backend | Supabase (Postgres, Auth, Storage, Row Level Security) — free tier |
-| Charts | Recharts (MIT) |
-| Hosting | Cloudflare Pages / Netlify / Vercel free tier (or GitHub Pages) |
-| Currency / locale | INR (₹), Indian digit grouping, DD/MM/YYYY, km & litres |
+| Item              | Choice                                                             |
+| ----------------- | ------------------------------------------------------------------ |
+| Frontend          | React 18 + TypeScript + Vite                                       |
+| PWA               | vite-plugin-pwa (Workbox)                                          |
+| Backend           | Supabase (Postgres, Auth, Storage, Row Level Security) — free tier |
+| Charts            | Recharts (MIT)                                                     |
+| Hosting           | Cloudflare Pages / Netlify / Vercel free tier (or GitHub Pages)    |
+| Currency / locale | INR (₹), Indian digit grouping, DD/MM/YYYY, km & litres            |
 
 ## Documentation index
 
-Start with [`docs/README.md`](docs/README.md) — it lists all 20 documents grouped by phase:
+Start with [`docs/README.md`](docs/README.md) — it lists all 21 documents grouped by phase:
 
 1. **Requirements & Planning** — Charter, BRD, SRS, URS, SPMP
 2. **Architecture & Design** — SDD, System Architecture, UI/UX, Database Schema
