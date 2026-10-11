@@ -133,3 +133,12 @@ export async function listCategories(): Promise<Category[]> {
     name: c.name,
   }));
 }
+
+/** Replaces the receipt paths on one expense (T14). The bucket is private; paths are not URLs. */
+export async function setReceiptPaths(expenseId: string, paths: string[]): Promise<void> {
+  const { error } = await getSupabase()
+    .from('expenses')
+    .update({ receipt_paths: paths })
+    .eq('id', expenseId);
+  if (error) throw mapDbError(error);
+}

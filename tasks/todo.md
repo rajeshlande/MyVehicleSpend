@@ -83,7 +83,7 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
 
 - [x] **T11 — Expense add, edit, delete, list (core fields)** (M)
   - Acceptance: FR-EXP-01 (all fields except receipts), FR-EXP-02, default date today, vehicle and UPI defaults; soft delete; list sorted newest first.
-  - Verify: TC-EXP-01 (without photo), TC-EXP-08. ✔ component tests (13 in `expenses.test.tsx`). **Pending:** receipt photo (T14).
+  - Verify: TC-EXP-01 (without photo), TC-EXP-08. ✔ component tests (13 in `expenses.test.tsx`). Receipt photos added on the edit screen (T14).
   - Deps: T8, T10, T4.
 
 - [x] **T12 — Expense filters, search, duplicate, quick add** (M)
@@ -96,9 +96,9 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
   - Verify: TC-EXP-04 ✔ (form test; warning blocks save until a reason is given). Fuel-path trigger is covered by DB tests.
   - Deps: T11.
 
-- [ ] **T14 — Receipt upload** (M)
+- [x] **T14 — Receipt upload** (M)
   - Acceptance: up to 3 photos; browser compression to ≤ 1 MB; JPEG, PNG, WebP, PDF; ≤ 5 MB raw; private bucket path `{uid}/{expense_id}/{n}.jpg`; storage policy by folder; signed URLs with 1 h expiry.
-  - Verify: TC-EXP-09, TC-DATA-04; storage policy SQL test.
+  - Verify: TC-EXP-09 ✔ (`receipts.test.tsx`, `core/receipts/rules.test.ts`); storage policy ✔ (`tests/db/storage.test.ts`, migration 0008). **Pending:** TC-DATA-04 HTTP check (no-token request → 400/403) needs the live project; browser compression to ≤ 1 MB (`compressImage`) needs a real-browser check.
   - Deps: T11, T3.
 
 **CP-B (part 3)** — expenses usable end-to-end.

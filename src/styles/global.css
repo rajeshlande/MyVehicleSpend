@@ -159,8 +159,9 @@ button:disabled {
   font-weight: 700;
 }
 
+/* Label under the + sits on the light nav bar, so it uses the primary colour (the circle keeps white text). */
 .nav-add {
-  color: var(--primary-contrast) !important;
+  color: var(--primary) !important;
 }
 
 .nav-add span.plus {

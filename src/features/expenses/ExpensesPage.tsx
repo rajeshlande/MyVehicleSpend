@@ -21,6 +21,7 @@ import {
 } from '../../core/expenses/filters';
 import { PAYMENT_MODES, type ExpenseInput, type PaymentMode } from '../../core/expenses/schema';
 import { ExpenseForm } from './ExpenseForm';
+import { ReceiptsSection } from './ReceiptsSection';
 import { EmptyState } from '../placeholders/Screens';
 
 type View =
@@ -136,17 +137,33 @@ export function ExpensesPage() {
     setMaxText('');
   }
 
+  function setReceipts(paths: string[]) {
+    if (view.mode !== 'edit') return;
+    const id = view.expense.id;
+    setExpenses((prev) => prev?.map((e) => (e.id === id ? { ...e, receiptPaths: paths } : e)));
+    setView({ mode: 'edit', expense: { ...view.expense, receiptPaths: paths } });
+  }
+
   if (view.mode === 'new' || view.mode === 'edit' || view.mode === 'duplicate') {
     return (
-      <ExpenseForm
-        vehicleId={activeVehicle.id}
-        categories={categories}
-        initial={editing}
-        duplicateOf={view.mode === 'duplicate' ? view.expense : undefined}
-        lastKnownOdometer={lastKnown}
-        onSubmit={save}
-        onCancel={() => setView({ mode: 'list' })}
-      />
+      <>
+        <ExpenseForm
+          vehicleId={activeVehicle.id}
+          categories={categories}
+          initial={editing}
+          duplicateOf={view.mode === 'duplicate' ? view.expense : undefined}
+          lastKnownOdometer={lastKnown}
+          onSubmit={save}
+          onCancel={() => setView({ mode: 'list' })}
+        />
+        {view.mode === 'edit' && (
+          <ReceiptsSection
+            expenseId={view.expense.id}
+            paths={view.expense.receiptPaths}
+            onChange={setReceipts}
+          />
+        )}
+      </>
     );
   }
 
