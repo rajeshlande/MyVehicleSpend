@@ -62,7 +62,7 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
 
 - [x] **T9 — Delete vehicle with typed confirmation** (S)
   - Acceptance: FR-VEH-03; requires typing `DELETE`; cascades to linked rows; other vehicles unchanged.
-  - Verify: DB tests ✔ (soft-delete of vehicle and linked rows, cross-user blocked, double delete blocked); UI test ✔ (DELETE typed to enable). **Decision:** soft delete, not hard cascade — see schema doc N-7. **Open:** a deleted registration number cannot be re-added; a restore flow is needed (flagged to owner).
+  - Verify: DB tests ✔ (soft-delete of vehicle and linked rows, cross-user blocked, double delete blocked); UI test ✔ (DELETE typed to enable). **Decision:** soft delete, not hard cascade — see schema doc N-7. **Decided (owner, 2026-10-11):** a deleted registration number is restored, not re-created — see T9b.
   - Deps: T8.
 
 **CP-B (part 2)** — vehicles fully manageable.
@@ -70,6 +70,11 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
 ---
 
 ## Phase 3 — Money & Expenses
+
+- [ ] **T9b — Restore deleted vehicle** (S)
+  - Acceptance: a "Deleted vehicles" list on the Vehicles page with a Restore button for each; adding a vehicle whose registration number matches a deleted one offers Restore instead of failing with "already exists"; restore brings back the vehicle and its linked rows (expenses, fuel logs, reminders, loans) that the delete RPC soft-deleted.
+  - Verify: DB test (restore by owner works; cross-user restore blocked; restore of a live vehicle is a no-op error); UI test (Restore shows and works; duplicate-number message offers Restore).
+  - Deps: T9.
 
 - [x] **T10 — Money utilities (pure)** (S)
   - Acceptance: `round2`; INR formatting via `Intl.NumberFormat('en-IN')` (₹1,23,456.00); MoneyInput parses `123456.5` and `1,23,456.5`; amount bounds 0 < x ≤ 1 crore.
