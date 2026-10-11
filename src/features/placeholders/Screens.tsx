@@ -65,17 +65,6 @@ export function LoansPage() {
   );
 }
 
-export function AddPage() {
-  return (
-    <>
-      <h1>Add entry</h1>
-      <EmptyState title="Quick add is coming soon">
-        <p>Expense, fuel, reminder and EMI entry arrive in Phases 3 to 6.</p>
-      </EmptyState>
-    </>
-  );
-}
-
 export function MorePage() {
   const signOut = useSignOut();
   return (

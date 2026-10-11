@@ -14,6 +14,8 @@ interface Props {
   vehicleId: string;
   categories: Category[];
   initial?: Expense;
+  /** Prefill from an existing expense for a new entry (FR-EXP-05). The date resets to today. */
+  duplicateOf?: Expense;
   /** Highest odometer reading known for the vehicle, excluding the expense being edited. */
   lastKnownOdometer: number;
   onSubmit: (input: ExpenseInput) => Promise<void>;
@@ -51,20 +53,22 @@ export function ExpenseForm({
   vehicleId,
   categories,
   initial,
+  duplicateOf,
   lastKnownOdometer,
   onSubmit,
   onCancel,
 }: Props) {
-  const [categoryId, setCategoryId] = useState(initial?.categoryId ?? '');
+  const src = initial ?? duplicateOf;
+  const [categoryId, setCategoryId] = useState(src?.categoryId ?? '');
   const [expenseDate, setExpenseDate] = useState(initial?.expenseDate ?? todayIST());
-  const [amount, setAmount] = useState(initial ? String(initial.amount) : '');
-  const [gst, setGst] = useState(initial?.gstAmount ? String(initial.gstAmount) : '');
-  const [paymentMode, setPaymentMode] = useState<string>(initial?.paymentMode ?? 'upi');
-  const [vendor, setVendor] = useState(initial?.vendor ?? '');
+  const [amount, setAmount] = useState(src ? String(src.amount) : '');
+  const [gst, setGst] = useState(src?.gstAmount ? String(src.gstAmount) : '');
+  const [paymentMode, setPaymentMode] = useState<string>(src?.paymentMode ?? 'upi');
+  const [vendor, setVendor] = useState(src?.vendor ?? '');
   const [odometer, setOdometer] = useState(
-    initial?.odometerKm !== undefined ? String(initial.odometerKm) : ''
+    src?.odometerKm !== undefined ? String(src.odometerKm) : ''
   );
-  const [notes, setNotes] = useState(initial?.notes ?? '');
+  const [notes, setNotes] = useState(src?.notes ?? '');
   const [overrideReason, setOverrideReason] = useState('');
   const [errors, setErrors] = useState<FieldErrors>({});
   const [saving, setSaving] = useState(false);
@@ -136,7 +140,9 @@ export function ExpenseForm({
       noValidate
       aria-labelledby="expense-form-title"
     >
-      <h2 id="expense-form-title">{initial ? 'Edit expense' : 'New expense'}</h2>
+      <h2 id="expense-form-title">
+        {initial ? 'Edit expense' : duplicateOf ? 'Duplicate expense' : 'New expense'}
+      </h2>
 
       <div className="field">
         <label htmlFor="exp-category">Category</label>

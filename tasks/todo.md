@@ -86,9 +86,9 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
   - Verify: TC-EXP-01 (without photo), TC-EXP-08. ✔ component tests (13 in `expenses.test.tsx`). **Pending:** receipt photo (T14).
   - Deps: T8, T10, T4.
 
-- [ ] **T12 — Expense filters, search, duplicate, quick add** (M)
+- [x] **T12 — Expense filters, search, duplicate, quick add** (M)
   - Acceptance: FR-EXP-03, 04, 05, 09; totals update with filters; quick add reachable in ≤ 3 taps.
-  - Verify: TC-EXP-05, 06, 07, 10 (timed run).
+  - Verify: TC-EXP-05 ✔, TC-EXP-06 ✔, TC-EXP-07 ✔ (component tests, `t12.test.tsx`; pure rules in `core/expenses/filters.test.ts`). TC-EXP-10 **pending**: the timed run on a mid-range Android device has not been done.
   - Deps: T11.
 
 - [x] **T13 — Odometer warning on expenses** (XS)

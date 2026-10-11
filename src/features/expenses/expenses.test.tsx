@@ -78,7 +78,7 @@ beforeEach(() => {
 async function openNewForm() {
   const user = userEvent.setup();
   render(<ExpensesPage />);
-  await screen.findByText('Petrol');
+  await screen.findByRole('button', { name: /Edit Petrol/ });
   await user.click(screen.getByRole('button', { name: 'Add expense' }));
   return user;
 }
@@ -203,7 +203,7 @@ describe('Edit and delete (FR-EXP-02, FR-EXP-03, TC-EXP-08)', () => {
     render(<ExpensesPage />);
     await user.click(await screen.findByRole('button', { name: /Delete Petrol/ }));
     expect(api.deleteExpense).not.toHaveBeenCalled();
-    expect(screen.getByText('Petrol')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Edit Petrol/ })).toBeInTheDocument();
   });
 
   it('shows a plain-language error when the server rejects a save', async () => {

@@ -4,7 +4,8 @@ import { LoginPage } from '../features/auth/LoginPage';
 import { SignUpPage } from '../features/auth/SignUpPage';
 import { RequireAuth } from '../features/auth/RequireAuth';
 import { AppShell } from '../components/AppShell';
-import { AddPage, HomePage, LoansPage, MorePage } from '../features/placeholders/Screens';
+import { HomePage, LoansPage, MorePage } from '../features/placeholders/Screens';
+import { QuickAddPage } from '../features/expenses/QuickAddPage';
 import { ExpensesPage } from '../features/expenses/ExpensesPage';
 import { VehicleProvider } from '../features/vehicles/VehicleContext';
 import { VehiclesPage } from '../features/vehicles/VehiclesPage';
@@ -41,7 +42,7 @@ export function App() {
                       <Route path="/" element={<HomePage />} />
                       <Route path="/expenses" element={<ExpensesPage />} />
                       <Route path="/loans" element={<LoansPage />} />
-                      <Route path="/add" element={<AddPage />} />
+                      <Route path="/add" element={<QuickAddPage />} />
                       <Route path="/more" element={<MorePage />} />
                       <Route path="/vehicles" element={<VehiclesPage />} />
                     </Routes>
