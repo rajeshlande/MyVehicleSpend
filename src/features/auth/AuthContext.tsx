@@ -19,7 +19,8 @@ export function mapAuthError(message: string | undefined): string {
   if (m.includes('invalid login credentials')) return 'Email or password is incorrect.';
   if (m.includes('already registered') || m.includes('already been registered'))
     return 'An account with this email already exists. Try signing in.';
-  if (m.includes('rate limit')) return 'Too many attempts. Please wait a few minutes and try again.';
+  if (m.includes('rate limit'))
+    return 'Too many attempts. Please wait a few minutes and try again.';
   if (m.includes('network') || m.includes('fetch'))
     return "Couldn't reach the server. Check your connection and try again.";
   return 'Something went wrong. Please try again.';
@@ -48,7 +49,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       session,
       signIn: async (input) => {
         const parsed = signInSchema.safeParse(input);
-        if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? 'Check your details.' };
+        if (!parsed.success)
+          return { error: parsed.error.issues[0]?.message ?? 'Check your details.' };
         const { error } = await getSupabase().auth.signInWithPassword({
           email: parsed.data.email,
           password: parsed.data.password,
@@ -58,7 +60,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       signUp: async (input) => {
         const parsed = signUpSchema.safeParse(input);
         if (!parsed.success)
-          return { error: parsed.error.issues[0]?.message ?? 'Check your details.', needsConfirmation: false };
+          return {
+            error: parsed.error.issues[0]?.message ?? 'Check your details.',
+            needsConfirmation: false,
+          };
         const { data, error } = await getSupabase().auth.signUp({
           email: parsed.data.email,
           password: parsed.data.password,
@@ -72,7 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         await getSupabase().auth.signOut();
       },
     }),
-    [session],
+    [session]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

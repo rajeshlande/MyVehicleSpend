@@ -7,11 +7,13 @@ Welcome! This guide helps you track every rupee your car or bike costs, and keep
 ## 1. Getting started
 
 ### 1.1 Create your account
+
 1. Open the app link on your phone or computer.
 2. Tap **Sign up**. Enter your email and a password of at least 8 characters.
 3. Check your email and confirm (if asked). Check the spam folder if you can't see the email.
 
 ### 1.2 Install the app on your phone (recommended)
+
 - **Android (Chrome):** tap ⋮ menu → **Install app** or **Add to Home screen**.
 - **iPhone (Safari):** tap the **Share** button → **Add to Home Screen**.
 - **Computer (Chrome/Edge):** click the install icon in the address bar.
@@ -19,6 +21,7 @@ Welcome! This guide helps you track every rupee your car or bike costs, and keep
 The app opens like any other app and works with a weak network.
 
 ### 1.3 Add your vehicle
+
 1. Tap **More → Vehicles → +**.
 2. Choose **Car**, **Bike**, **Scooter** or **Other**.
 3. Type your registration number (for example `MH12AB1234`). Spaces are optional.
@@ -32,7 +35,9 @@ You can add more vehicles later and switch between them from the top of the Home
 ## 2. Logging expenses
 
 ### 2.1 Quick add (fastest)
+
 Tap **➕** → **Expense**, then:
+
 1. Pick a category (for example **Tolls & Parking → FASTag recharge**).
 2. Enter the amount.
 3. Tap **Save**.
@@ -40,12 +45,15 @@ Tap **➕** → **Expense**, then:
 Date, vehicle and payment mode default to today, your active vehicle and UPI. Change them only if needed.
 
 ### 2.2 Full expense form
+
 Add more detail when you have time: vendor, odometer, GST, notes and up to 3 receipt photos.
 
 **Tip:** The GST amount is shown on most garage bills as "GST incl." — type that part in the GST box to see the tax you paid.
 
 ### 2.3 Fuel fill-up
+
 Tap **➕ → Fuel**:
+
 - Enter the odometer reading (from the meter).
 - Enter litres and price per litre. The total is worked out for you.
 - Tick **Full tank** if you filled to the top. This is what makes mileage accurate.
@@ -53,17 +61,18 @@ Tap **➕ → Fuel**:
 Fuel fill-ups are automatically counted as expenses too. You do not need to add them twice.
 
 ### 2.4 Common categories at a glance
-| If you paid for… | Category to choose |
-|---|---|
-| Petrol, diesel, CNG | Fuel & Energy |
-| Home EV charging | Fuel & Energy › EV charging (home) |
-| Motor insurance premium | Insurance |
-| PUC test certificate | Government & RTO › PUC certificate |
-| Road tax, RC fee, transfer | Government & RTO |
-| FASTag top-up | Tolls & Parking › FASTag recharge |
-| Oil change, service | Maintenance & Service |
-| Challan / traffic fine | Traffic Fines |
-| Car loan EMI | Loan & Finance › EMI payment (or use **EMI paid** in the Loans screen) |
+
+| If you paid for…           | Category to choose                                                     |
+| -------------------------- | ---------------------------------------------------------------------- |
+| Petrol, diesel, CNG        | Fuel & Energy                                                          |
+| Home EV charging           | Fuel & Energy › EV charging (home)                                     |
+| Motor insurance premium    | Insurance                                                              |
+| PUC test certificate       | Government & RTO › PUC certificate                                     |
+| Road tax, RC fee, transfer | Government & RTO                                                       |
+| FASTag top-up              | Tolls & Parking › FASTag recharge                                      |
+| Oil change, service        | Maintenance & Service                                                  |
+| Challan / traffic fine     | Traffic Fines                                                          |
+| Car loan EMI               | Loan & Finance › EMI payment (or use **EMI paid** in the Loans screen) |
 
 ---
 
@@ -78,6 +87,7 @@ Never miss a renewal again.
 5. Save.
 
 On the Home screen, **Due soon** lists items coming up. When you renew:
+
 - Tap **Mark done**.
 - Enter the amount you paid. The expense is recorded for you.
 
@@ -94,16 +104,19 @@ On the Home screen, **Due soon** lists items coming up. When you renew:
 ## 5. Loan tracker
 
 ### 5.1 Add a loan
+
 1. Go to **Loans → +**.
 2. Enter the lender, loan amount, interest rate, tenure in months and start date.
 3. The app calculates your EMI. If your bank shows a different EMI, type it in — the schedule will adjust.
 
 ### 5.2 Record your EMI payment
+
 - Open the loan → find the due instalment → tap **Mark paid**.
 - Enter the date and any late fee or bounce charge.
 - The EMI is added to your expenses automatically (with the interest part shown separately).
 
 ### 5.3 Prepayment and foreclosure
+
 - **Simulate prepayment:** enter an amount and date. Choose:
   - **Reduce tenure** — same EMI, loan ends sooner, you save more interest.
   - **Reduce EMI** — same end date, lower monthly payment.
@@ -186,4 +199,5 @@ That's the Indian number format (lakhs and crores). The value is the same.
 ---
 
 ## 11. Need help?
+
 Open **More → Help & feedback** and describe the problem. Include a screenshot if you can. Please do not send your password to anyone, including the app team.

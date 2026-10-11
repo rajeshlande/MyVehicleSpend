@@ -6,7 +6,9 @@ import { createDb } from './harness';
 describe('T4 seed.sql', () => {
   it('inserts the 78 system categories from the schema doc §7', async () => {
     const db = await createDb({ seed: true });
-    const r = await db.query<{ n: string }>(`select count(*)::text as n from public.expense_categories where user_id is null`);
+    const r = await db.query<{ n: string }>(
+      `select count(*)::text as n from public.expense_categories where user_id is null`
+    );
     expect(Number(r.rows[0]!.n)).toBe(78);
   });
 
@@ -15,14 +17,17 @@ describe('T4 seed.sql', () => {
     const { readFileSync } = await import('node:fs');
     const { resolve } = await import('node:path');
     await db.exec(readFileSync(resolve(__dirname, '../../supabase/seed.sql'), 'utf8'));
-    const r = await db.query<{ n: string }>(`select count(*)::text as n from public.expense_categories where user_id is null`);
+    const r = await db.query<{ n: string }>(
+      `select count(*)::text as n from public.expense_categories where user_id is null`
+    );
     expect(Number(r.rows[0]!.n)).toBe(78);
   });
 
   it('includes a known Indian category', async () => {
     const db = await createDb({ seed: true });
     const r = await db.query<{ n: string }>(
-      `select count(*)::text as n from public.expense_categories where group_name='Government & RTO' and name='PUC certificate'`);
+      `select count(*)::text as n from public.expense_categories where group_name='Government & RTO' and name='PUC certificate'`
+    );
     expect(Number(r.rows[0]!.n)).toBe(1);
   });
 });

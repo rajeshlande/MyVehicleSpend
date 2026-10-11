@@ -91,17 +91,20 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 # Project-specific instructions: My Vehicle Spend
 
 ## Project context
+
 - Indian vehicle expense and loan tracker (car/bike), built as a PWA.
 - Stack: React 18 + TypeScript + Vite, vite-plugin-pwa, Dexie (offline), TanStack Query, Recharts, Zod, Supabase (Auth, Postgres + RLS, Storage).
 - Currency INR with Indian grouping (₹1,23,456.00); dates DD/MM/YYYY; Indian FY (1 Apr – 31 Mar).
 
 ## Source of truth
+
 - Requirements: `docs/01-requirements/` (SRS FR/NFR IDs are the reference for every change).
 - Design and schema: `docs/02-architecture/`. The SQL in `04-database-schema.md` is the target for `supabase/migrations/`.
 - Tests: `docs/04-testing/02-system-test-cases.md` (TC IDs map to FR IDs).
 - If code and docs disagree, ask before changing either. Update docs in the same change when behaviour changes.
 
 ## Working rules
+
 - Before implementing a feature, state which FR/TC IDs it satisfies.
 - Money: never use floating-point for stored or compared amounts; round only with `round2` in `src/core/money`.
 - Loan maths (EMI, schedule, prepayment) must match the reference values in TC-LOAN-01 to ₹0.01 before any UI work.

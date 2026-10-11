@@ -20,7 +20,6 @@ vi.mock('../../data/supabase', () => ({
   isConfigured: () => true,
 }));
 
-
 function renderAt(path: string, protectedHome = false) {
   return render(
     <MemoryRouter initialEntries={[path]}>
@@ -42,7 +41,7 @@ function renderAt(path: string, protectedHome = false) {
           />
         </Routes>
       </AuthProvider>
-    </MemoryRouter>,
+    </MemoryRouter>
   );
 }
 
@@ -54,14 +53,18 @@ describe('TC-AUTH-02 — weak password rejected before any request', () => {
     await userEvent.type(await screen.findByLabelText(/^Email/), 'tester1@test.local');
     await userEvent.type(screen.getByLabelText(/Password/), 'abc');
     await userEvent.click(screen.getByRole('button', { name: 'Create account' }));
-    expect(await screen.findByRole('alert')).toHaveTextContent('Password must be at least 8 characters.');
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'Password must be at least 8 characters.'
+    );
     expect(authMock.signUp).not.toHaveBeenCalled();
   });
 });
 
 describe('TC-AUTH-03 — wrong password', () => {
   it('shows the plain message and keeps the user on the login page', async () => {
-    authMock.signInWithPassword.mockResolvedValue({ error: { message: 'Invalid login credentials' } });
+    authMock.signInWithPassword.mockResolvedValue({
+      error: { message: 'Invalid login credentials' },
+    });
     renderAt('/login');
     await userEvent.type(await screen.findByLabelText('Email'), 'alice@test.local');
     await userEvent.type(screen.getByLabelText('Password'), 'wrongpass');

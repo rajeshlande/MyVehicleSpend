@@ -92,14 +92,26 @@ export function VehiclesPage() {
                     {isActive ? (
                       <span className="badge badge-active">Active</span>
                     ) : (
-                      <button type="button" className="btn-secondary" onClick={() => setActiveVehicleId(v.id)}>
+                      <button
+                        type="button"
+                        className="btn-secondary"
+                        onClick={() => setActiveVehicleId(v.id)}
+                      >
                         Make active
                       </button>
                     )}
-                    <button type="button" className="btn-secondary" onClick={() => setMode({ kind: 'edit', vehicle: v })}>
+                    <button
+                      type="button"
+                      className="btn-secondary"
+                      onClick={() => setMode({ kind: 'edit', vehicle: v })}
+                    >
                       Edit
                     </button>
-                    <button type="button" className="btn-secondary" onClick={() => void toggleArchive(v)}>
+                    <button
+                      type="button"
+                      className="btn-secondary"
+                      onClick={() => void toggleArchive(v)}
+                    >
                       {v.isArchived ? 'Unarchive' : 'Archive'}
                     </button>
                     <button type="button" className="btn-danger" onClick={() => setDeleteTarget(v)}>
@@ -150,8 +162,8 @@ export function DeleteVehicleDialog({
     <section className="dialog" role="alertdialog" aria-modal="true" aria-labelledby="delete-title">
       <h2 id="delete-title">Delete {formatRegistration(vehicle.registrationNo)}?</h2>
       <p>
-        Its expenses, fuel logs, reminders and loans will be hidden from your account. This cannot be undone
-        from the app. Type <strong>DELETE</strong> to confirm.
+        Its expenses, fuel logs, reminders and loans will be hidden from your account. This cannot
+        be undone from the app. Type <strong>DELETE</strong> to confirm.
       </p>
       <label>
         Type DELETE

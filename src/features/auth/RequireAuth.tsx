@@ -6,7 +6,12 @@ import { useAuth } from './AuthContext';
 export function RequireAuth({ children }: { children: ReactNode }) {
   const { session } = useAuth();
   const location = useLocation();
-  if (session === undefined) return <p className="loading" role="status">Loading…</p>;
+  if (session === undefined)
+    return (
+      <p className="loading" role="status">
+        Loading…
+      </p>
+    );
   if (session === null) return <Navigate to="/login" replace state={{ from: location.pathname }} />;
   return <>{children}</>;
 }

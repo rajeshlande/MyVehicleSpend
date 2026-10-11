@@ -52,7 +52,7 @@ function renderPage() {
       <VehicleProvider>
         <VehiclesPage />
       </VehicleProvider>
-    </MemoryRouter>,
+    </MemoryRouter>
   );
 }
 
@@ -82,7 +82,7 @@ describe('TC-VEH-01 — add a car', () => {
         model: 'Swift',
         fuelType: 'petrol',
         startOdometerKm: 25000,
-      }),
+      })
     );
   });
 });
@@ -98,7 +98,11 @@ describe('TC-VEH-02 — add a bike', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Save' }));
     await waitFor(() => expect(api.createVehicle).toHaveBeenCalledTimes(1));
     expect(api.createVehicle).toHaveBeenCalledWith(
-      expect.objectContaining({ vehicleType: 'bike', registrationNo: 'KA01XY0007', startOdometerKm: 900 }),
+      expect.objectContaining({
+        vehicleType: 'bike',
+        registrationNo: 'KA01XY0007',
+        startOdometerKm: 900,
+      })
     );
     expect(api.createVehicle.mock.calls[0]![0].make).toBeUndefined();
   });
@@ -127,13 +131,17 @@ describe('TC-VEH-04 — invalid registration', () => {
 
 describe('TC-VEH-03 — duplicate registration', () => {
   it('shows the duplicate message from the data layer', async () => {
-    api.createVehicle.mockRejectedValue(new DataError('A vehicle with this number already exists.', '23505'));
+    api.createVehicle.mockRejectedValue(
+      new DataError('A vehicle with this number already exists.', '23505')
+    );
     renderPage();
     await userEvent.click(await screen.findByRole('button', { name: 'Add vehicle' }));
     await userEvent.type(screen.getByLabelText('Registration number'), 'MH12AB1234');
     await userEvent.type(screen.getByLabelText(/Odometer now/), '100');
     await userEvent.click(screen.getByRole('button', { name: 'Save' }));
-    expect(await screen.findByRole('alert')).toHaveTextContent('A vehicle with this number already exists.');
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'A vehicle with this number already exists.'
+    );
   });
 });
 
@@ -149,7 +157,10 @@ describe('TC-VEH-05 — edit a vehicle', () => {
     await userEvent.type(make, 'Suzuki');
     await userEvent.click(screen.getByRole('button', { name: 'Save' }));
     await waitFor(() => expect(api.updateVehicle).toHaveBeenCalledTimes(1));
-    expect(api.updateVehicle).toHaveBeenCalledWith('v1', expect.objectContaining({ make: 'Suzuki', isArchived: false }));
+    expect(api.updateVehicle).toHaveBeenCalledWith(
+      'v1',
+      expect.objectContaining({ make: 'Suzuki', isArchived: false })
+    );
   });
 });
 
@@ -197,6 +208,8 @@ describe('TC-VEH-06 — delete with typed confirmation', () => {
 describe('empty state', () => {
   it('invites the user to add a vehicle', async () => {
     renderPage();
-    expect(await screen.findByRole('heading', { name: 'Add your car or bike' })).toBeInTheDocument();
+    expect(
+      await screen.findByRole('heading', { name: 'Add your car or bike' })
+    ).toBeInTheDocument();
   });
 });

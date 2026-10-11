@@ -24,7 +24,6 @@ vi.mock('../data/supabase', () => ({
   isConfigured: () => true,
 }));
 
-
 function renderApp(path: string) {
   return render(
     <MemoryRouter initialEntries={[path]}>
@@ -48,7 +47,7 @@ function renderApp(path: string) {
           />
         </Routes>
       </AuthProvider>
-    </MemoryRouter>,
+    </MemoryRouter>
   );
 }
 

@@ -88,7 +88,7 @@ export async function createVehicle(input: VehicleInput): Promise<Vehicle> {
 
 export async function updateVehicle(
   id: string,
-  input: VehicleInput & { isArchived: boolean },
+  input: VehicleInput & { isArchived: boolean }
 ): Promise<Vehicle> {
   const { data, error } = await getSupabase()
     .from('vehicles')

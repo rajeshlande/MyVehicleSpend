@@ -29,7 +29,10 @@ export function SignUpPage() {
     return (
       <main className="auth-page">
         <h1>Check your email</h1>
-        <p>We sent a confirmation link to <strong>{email}</strong>. Open it to finish creating your account.</p>
+        <p>
+          We sent a confirmation link to <strong>{email}</strong>. Open it to finish creating your
+          account.
+        </p>
         <p>
           <Link to="/login">Back to sign in</Link>
         </p>
@@ -43,11 +46,22 @@ export function SignUpPage() {
       <form onSubmit={onSubmit} noValidate>
         <label>
           Name <span className="hint">(optional)</span>
-          <input autoComplete="name" value={displayName} onChange={(e) => setDisplayName(e.target.value)} maxLength={60} />
+          <input
+            autoComplete="name"
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+            maxLength={60}
+          />
         </label>
         <label>
           Email
-          <input type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          <input
+            type="email"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
         </label>
         <label>
           Password <span className="hint">(at least {PASSWORD_MIN_LENGTH} characters)</span>

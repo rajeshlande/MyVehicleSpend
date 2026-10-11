@@ -21,7 +21,10 @@ export const vehicleInputSchema = z.object({
   registrationNo: z
     .string()
     .transform(normalizeRegistration)
-    .refine(isValidRegistration, 'Registration number must be 4–12 letters or digits, e.g. MH12AB1234.'),
+    .refine(
+      isValidRegistration,
+      'Registration number must be 4–12 letters or digits, e.g. MH12AB1234.'
+    ),
   make: optionalText(40),
   model: optionalText(60),
   variant: optionalText(60),

@@ -2,7 +2,7 @@
 export class DataError extends Error {
   constructor(
     message: string,
-    readonly code?: string,
+    readonly code?: string
   ) {
     super(message);
     this.name = 'DataError';
@@ -21,7 +21,8 @@ export function mapDbError(err: DbErrorLike): DataError {
     case '23505':
       return new DataError('A vehicle with this number already exists.', err.code);
     case '23514':
-      if (msg.includes('odometer')) return new DataError(err.message ?? 'Odometer is too low.', err.code);
+      if (msg.includes('odometer'))
+        return new DataError(err.message ?? 'Odometer is too low.', err.code);
       return new DataError('One of the values is outside the allowed range.', err.code);
     case 'P0002':
       return new DataError('That vehicle was not found. It may already be deleted.', err.code);

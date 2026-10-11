@@ -1,13 +1,14 @@
 # Database Schema Design — My Vehicle Spend
 
-| Field | Value |
-|---|---|
-| Version | 1.0 (Draft) |
-| Date | 2026-10-11 |
-| Engine | PostgreSQL 15 (Supabase) |
+| Field          | Value                                          |
+| -------------- | ---------------------------------------------- |
+| Version        | 1.0 (Draft)                                    |
+| Date           | 2026-10-11                                     |
+| Engine         | PostgreSQL 15 (Supabase)                       |
 | Migration tool | Supabase CLI (`supabase migration new <name>`) |
 
 ## 1. Conventions
+
 - Table names: `snake_case`, plural.
 - Primary keys: `uuid`, client-generated (for offline) with default `gen_random_uuid()`.
 - Money: `numeric(12,2)` (INR, rupees and paise). Rates: `numeric(6,3)`.
@@ -443,29 +444,32 @@ where prev_odo is not null and odometer_km > prev_odo;
 
 ## 7. Seed Data — System Expense Categories (subset)
 
-| group_name | name |
-|---|---|
-| Fuel & Energy | Petrol, Diesel, CNG, LPG, EV charging (home), EV charging (public), Battery top-up |
-| Insurance | Third-party, Comprehensive, Zero-depreciation add-on, Engine protect, Roadside assistance, Insurance renewal fee |
-| Government & RTO | Road tax, Token tax, RC / registration fee, Smart card fee, Fitness certificate, PUC certificate, Permit, NOC / hypothecation, Ownership transfer, HSRP number plate, Duplicate RC, Licence fee / renewal, Green tax |
-| Tolls & Parking | FASTag recharge, Cash toll, Parking, Parking fine |
+| group_name            | name                                                                                                                                                                                                                                                                                                    |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Fuel & Energy         | Petrol, Diesel, CNG, LPG, EV charging (home), EV charging (public), Battery top-up                                                                                                                                                                                                                      |
+| Insurance             | Third-party, Comprehensive, Zero-depreciation add-on, Engine protect, Roadside assistance, Insurance renewal fee                                                                                                                                                                                        |
+| Government & RTO      | Road tax, Token tax, RC / registration fee, Smart card fee, Fitness certificate, PUC certificate, Permit, NOC / hypothecation, Ownership transfer, HSRP number plate, Duplicate RC, Licence fee / renewal, Green tax                                                                                    |
+| Tolls & Parking       | FASTag recharge, Cash toll, Parking, Parking fine                                                                                                                                                                                                                                                       |
 | Maintenance & Service | Periodic service, Engine oil & filter, Air filter, Brake pads/shoes, Brake fluid, Clutch, Chain & sprocket, Battery, Tyres, Puncture repair, Wheel alignment & balancing, Suspension, Coolant, Spark plugs, Wiper blades, Bulbs, AC service & gas, Wash & detailing, Denting & painting, Labour, Towing |
-| Accessories | Seat cover, Music system, Dashcam, Mobile holder, Crash guard, Rear camera, Tinted film, Roof rack, Other accessory |
-| Traffic Fines | E-challan, Manual challan, Overspeed, No parking, No helmet / seat belt, Late renewal penalty |
-| Loan & Finance | EMI payment, Processing fee, Documentation charge, Prepayment charge, Foreclosure charge, Late payment, Bounce charge, Loan insurance |
-| Other | Driver salary, Driver meals, Cab / auto fare, Miscellaneous |
+| Accessories           | Seat cover, Music system, Dashcam, Mobile holder, Crash guard, Rear camera, Tinted film, Roof rack, Other accessory                                                                                                                                                                                     |
+| Traffic Fines         | E-challan, Manual challan, Overspeed, No parking, No helmet / seat belt, Late renewal penalty                                                                                                                                                                                                           |
+| Loan & Finance        | EMI payment, Processing fee, Documentation charge, Prepayment charge, Foreclosure charge, Late payment, Bounce charge, Loan insurance                                                                                                                                                                   |
+| Other                 | Driver salary, Driver meals, Cab / auto fare, Miscellaneous                                                                                                                                                                                                                                             |
 
 Seed script: `supabase/seed.sql` (insert rows with `user_id = null`).
 
 ## 8. Data Retention & Deletion
+
 - Soft delete (`deleted_at`) retained 30 days, then a scheduled job (pg_cron, free on Supabase) hard-deletes rows older than 30 days.
 - Account deletion removes all rows immediately (cascade from `auth.users`).
 
 ## 9. Backup & Migration
+
 - Logical backup: JSON export from app (FR-DATA-01) and `pg_dump` via Supabase CLI for admin (see Sysadmin Guide).
 - Schema changes: only forward migrations; never edit applied migration files.
 
 ## 10. Indian-specific Modelling Notes
+
 - Registration number format allows BH-series and state codes (e.g. `MH12AB1234`, `22BH1234AA`) — regex is permissive by design.
 - FY derived from `expense_date`; no FY column stored.
 - GST stored as a component, not a separate rate, because bills show the total with GST included.
@@ -474,14 +478,14 @@ Seed script: `supabase/seed.sql` (insert rows with `user_id = null`).
 
 Changes made while turning this design into migrations. Each was verified by `tests/db/`:
 
-| # | Design text | Built as | Reason |
-|---|---|---|---|
-| N-1 | `create extension pgcrypto` | Removed | `gen_random_uuid()` is built into PostgreSQL 13+, and Supabase provides PostgreSQL 15+. |
-| N-2 | `user_id` has no default (API doc §2.2 assumes one) | `default auth.uid()` on all 7 user-owned tables | Clients omit `user_id`; RLS still checks it. |
-| N-3 | `add_fuel_log` inserts the expense before the fuel log's `ON CONFLICT`, so a retry duplicates the expense | Returns the existing row early when the id exists | Makes retries idempotent (TC-PWA-05). |
-| N-4 | `v_fuel_efficiency` has `WINDOW` after `WHERE` | Window moved into `lag()` | Syntax error in the original. |
-| N-5 | Repeated RLS policies shown as a comment | Expanded to full policies for all 6 owned tables | Explicit policies are needed for review. |
-| N-6 | Views not explicitly granted | `grant select` on both views to `authenticated` | Views are created after the table-level grant. |
+| #   | Design text                                                                                               | Built as                                          | Reason                                                                                  |
+| --- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| N-1 | `create extension pgcrypto`                                                                               | Removed                                           | `gen_random_uuid()` is built into PostgreSQL 13+, and Supabase provides PostgreSQL 15+. |
+| N-2 | `user_id` has no default (API doc §2.2 assumes one)                                                       | `default auth.uid()` on all 7 user-owned tables   | Clients omit `user_id`; RLS still checks it.                                            |
+| N-3 | `add_fuel_log` inserts the expense before the fuel log's `ON CONFLICT`, so a retry duplicates the expense | Returns the existing row early when the id exists | Makes retries idempotent (TC-PWA-05).                                                   |
+| N-4 | `v_fuel_efficiency` has `WINDOW` after `WHERE`                                                            | Window moved into `lag()`                         | Syntax error in the original.                                                           |
+| N-5 | Repeated RLS policies shown as a comment                                                                  | Expanded to full policies for all 6 owned tables  | Explicit policies are needed for review.                                                |
+| N-6 | Views not explicitly granted                                                                              | `grant select` on both views to `authenticated`   | Views are created after the table-level grant.                                          |
 
 | N-7 | Vehicle delete described as cascade removal (TC-VEH-06, SRS FR-VEH-03) | `delete_vehicle` RPC soft-deletes the vehicle and its expenses, fuel logs, reminders and loans in one transaction (migration 0006) | Keeps deletes replicable for the offline sync engine (SDD §7). Hard removal is left to the account-deletion job. A deleted registration number stays blocked by the unique index; a restore flow is an open item. |
 

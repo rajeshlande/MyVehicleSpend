@@ -28,7 +28,13 @@ export function LoginPage() {
       <form onSubmit={onSubmit} noValidate aria-describedby={error ? 'auth-error' : undefined}>
         <label>
           Email
-          <input type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          <input
+            type="email"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
         </label>
         <label>
           Password

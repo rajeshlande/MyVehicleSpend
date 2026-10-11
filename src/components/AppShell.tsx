@@ -39,8 +39,15 @@ export function AppShell({ children }: { children: ReactNode }) {
           <span aria-hidden="true">{TABS[1].icon}</span>
           {TABS[1].label}
         </NavLink>
-        <button type="button" className="nav-add" onClick={() => navigate('/add')} aria-label="Add entry">
-          <span className="plus" aria-hidden="true">+</span>
+        <button
+          type="button"
+          className="nav-add"
+          onClick={() => navigate('/add')}
+          aria-label="Add entry"
+        >
+          <span className="plus" aria-hidden="true">
+            +
+          </span>
           Add
         </button>
         <NavLink to="/loans">

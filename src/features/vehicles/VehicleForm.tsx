@@ -1,5 +1,10 @@
 import { useState, type FormEvent } from 'react';
-import { vehicleInputSchema, FUEL_TYPES, VEHICLE_TYPES, type VehicleInput } from '../../core/vehicles/schema';
+import {
+  vehicleInputSchema,
+  FUEL_TYPES,
+  VEHICLE_TYPES,
+  type VehicleInput,
+} from '../../core/vehicles/schema';
 import { formatRegistration, normalizeRegistration } from '../../core/vehicles/registration';
 import type { Vehicle } from '../../data/vehicles';
 
@@ -29,7 +34,7 @@ const TYPE_LABEL: Record<(typeof VEHICLE_TYPES)[number], string> = {
 export function VehicleForm({ initial, onSubmit, onCancel }: Props) {
   const [vehicleType, setVehicleType] = useState<string>(initial?.vehicleType ?? 'car');
   const [registrationNo, setRegistrationNo] = useState(
-    initial ? formatRegistration(initial.registrationNo) : '',
+    initial ? formatRegistration(initial.registrationNo) : ''
   );
   const [make, setMake] = useState(initial?.make ?? '');
   const [model, setModel] = useState(initial?.model ?? '');
@@ -37,7 +42,7 @@ export function VehicleForm({ initial, onSubmit, onCancel }: Props) {
   const [fuelType, setFuelType] = useState<string>(initial?.fuelType ?? 'petrol');
   const [purchaseDate, setPurchaseDate] = useState(initial?.purchaseDate ?? '');
   const [purchasePrice, setPurchasePrice] = useState(
-    initial?.purchasePrice === undefined ? '' : String(initial.purchasePrice),
+    initial?.purchasePrice === undefined ? '' : String(initial.purchasePrice)
   );
   const [odometer, setOdometer] = useState(initial ? String(initial.startOdometerKm) : '');
   const [error, setError] = useState<string | null>(null);
@@ -95,7 +100,11 @@ export function VehicleForm({ initial, onSubmit, onCancel }: Props) {
       </label>
       <label>
         Make <span className="hint">(optional)</span>
-        <input value={make} onChange={(e) => setMake(e.target.value)} placeholder="e.g. Maruti Suzuki" />
+        <input
+          value={make}
+          onChange={(e) => setMake(e.target.value)}
+          placeholder="e.g. Maruti Suzuki"
+        />
       </label>
       <label>
         Model <span className="hint">(optional)</span>
@@ -103,7 +112,11 @@ export function VehicleForm({ initial, onSubmit, onCancel }: Props) {
       </label>
       <label>
         Variant <span className="hint">(optional)</span>
-        <input value={variant} onChange={(e) => setVariant(e.target.value)} placeholder="e.g. VXi" />
+        <input
+          value={variant}
+          onChange={(e) => setVariant(e.target.value)}
+          placeholder="e.g. VXi"
+        />
       </label>
       <label>
         Fuel type
