@@ -31,33 +31,31 @@ const MIN_KM = 50;
 
 export function computeMileage(fills: readonly FuelFill[]): MileageResult {
   const sorted = [...fills].sort((a, b) => a.odometerKm - b.odometerKm);
-  const fullIdx = sorted.map((f, i) => (f.isFull ? i : -1)).filter((i) => i >= 0);
+  // Positions of full-tank fills in the sorted list.
+  const fulls = sorted.flatMap((f, i) => (f.isFull ? [{ fill: f, index: i }] : []));
 
   const intervals: MileageInterval[] = [];
-  for (let k = 1; k < fullIdx.length; k++) {
-    const prev = fullIdx[k - 1]!;
-    const cur = fullIdx[k]!;
-    const distanceKm = sorted[cur]!.odometerKm - sorted[prev]!.odometerKm;
+  for (let k = 1; k < fulls.length; k++) {
+    const prev = fulls[k - 1];
+    const cur = fulls[k];
+    if (!prev || !cur) continue;
+    const distanceKm = cur.fill.odometerKm - prev.fill.odometerKm;
     let litres = 0;
-    for (let j = prev + 1; j <= cur; j++) litres += sorted[j]!.litres;
+    for (let j = prev.index + 1; j <= cur.index; j++) litres += sorted[j]?.litres ?? 0;
     if (distanceKm <= 0 || litres <= 0) continue; // reject, do not count
-    intervals.push({
-      endDate: sorted[cur]!.filledOn,
-      distanceKm,
-      litres,
-      kmpl: distanceKm / litres,
-    });
+    intervals.push({ endDate: cur.fill.filledOn, distanceKm, litres, kmpl: distanceKm / litres });
   }
 
-  if (fullIdx.length < 2) {
+  if (fulls.length < 2) {
     return {
       status: 'insufficient',
       message: 'Add one more full-tank fill to see mileage.',
       intervals,
     };
   }
-  const totalDistance =
-    sorted[fullIdx[fullIdx.length - 1]!]!.odometerKm - sorted[fullIdx[0]!]!.odometerKm;
+  const first = fulls[0];
+  const last = fulls[fulls.length - 1];
+  const totalDistance = (last?.fill.odometerKm ?? 0) - (first?.fill.odometerKm ?? 0);
   if (totalDistance < MIN_KM) {
     return {
       status: 'insufficient',
@@ -65,7 +63,8 @@ export function computeMileage(fills: readonly FuelFill[]): MileageResult {
       intervals,
     };
   }
-  if (intervals.length === 0) {
+  const firstInterval = intervals[0];
+  if (!firstInterval) {
     return {
       status: 'insufficient',
       message: 'Add more fills with increasing odometer readings.',
@@ -75,8 +74,8 @@ export function computeMileage(fills: readonly FuelFill[]): MileageResult {
 
   const sumKm = intervals.reduce((s, i) => s + i.distanceKm, 0);
   const sumL = intervals.reduce((s, i) => s + i.litres, 0);
-  let best = intervals[0]!;
-  let worst = intervals[0]!;
+  let best = firstInterval;
+  let worst = firstInterval;
   for (const i of intervals) {
     if (i.kmpl > best.kmpl) best = i;
     if (i.kmpl < worst.kmpl) worst = i;

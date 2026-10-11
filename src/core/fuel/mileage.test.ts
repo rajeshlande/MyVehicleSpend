@@ -19,9 +19,9 @@ describe('computeMileage (SDD §5.6)', () => {
     // Litres after the first full tank, up to and including the second: 14 + 16 = 30 L over 500 km.
     expect(r.status).toBe('ok');
     expect(r.intervals).toHaveLength(1);
-    expect(r.intervals[0]!.distanceKm).toBe(500);
-    expect(r.intervals[0]!.litres).toBe(30);
-    expect(r.intervals[0]!.kmpl).toBeCloseTo(16.67, 2);
+    expect(r.intervals[0]?.distanceKm).toBe(500);
+    expect(r.intervals[0]?.litres).toBe(30);
+    expect(r.intervals[0]?.kmpl).toBeCloseTo(16.67, 2);
   });
 
   it('gives average, best and worst with the dates of the best and worst intervals (TC-FUEL-03)', () => {
@@ -44,7 +44,7 @@ describe('computeMileage (SDD §5.6)', () => {
       fill('2026-07-20', 10500, 25),
     ]);
     expect(r.intervals).toHaveLength(1);
-    expect(r.intervals[0]!.distanceKm).toBe(500);
+    expect(r.intervals[0]?.distanceKm).toBe(500);
   });
 
   it('asks for one more full tank when fewer than two full fills exist (TC-FUEL-07)', () => {
