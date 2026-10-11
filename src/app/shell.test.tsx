@@ -6,6 +6,9 @@ import { AuthProvider } from '../features/auth/AuthContext';
 import { RequireAuth } from '../features/auth/RequireAuth';
 import { LoginPage } from '../features/auth/LoginPage';
 import { AppShell } from '../components/AppShell';
+import { VehicleProvider } from '../features/vehicles/VehicleContext';
+
+vi.mock('../data/vehicles', () => ({ listVehicles: vi.fn().mockResolvedValue([]) }));
 import { MorePage, HomePage } from '../features/placeholders/Screens';
 import { resetAuthMock } from '../test/supabaseMock';
 import { vi } from 'vitest';
@@ -32,12 +35,14 @@ function renderApp(path: string) {
             path="/*"
             element={
               <RequireAuth>
-                <AppShell>
-                  <Routes>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/more" element={<MorePage />} />
-                  </Routes>
-                </AppShell>
+                <VehicleProvider>
+                  <AppShell>
+                    <Routes>
+                      <Route path="/" element={<HomePage />} />
+                      <Route path="/more" element={<MorePage />} />
+                    </Routes>
+                  </AppShell>
+                </VehicleProvider>
               </RequireAuth>
             }
           />

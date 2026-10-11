@@ -50,19 +50,19 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
 
 ## Phase 2 — Vehicles
 
-- [ ] **T7 — Registration number and vehicle validation (pure)** (S)
+- [x] **T7 — Registration number and vehicle validation (pure)** (S)
   - Acceptance: normalise to upper-case no spaces; pattern from schema; display format `MH 12 AB 1234`; Zod schema for vehicle input (FR-VEH-01, FR-VEH-06).
   - Verify: unit tests; TC-VEH-04 invalid format rejected.
   - Deps: T1.
 
-- [ ] **T8 — Vehicle create, edit, list, active-vehicle switch** (M)
+- [x] **T8 — Vehicle create, edit, list, active-vehicle switch** (M)
   - Acceptance: FR-VEH-01, 02, 04, 05; duplicate reg shows "A vehicle with this number already exists." (TC-VEH-03); active vehicle persists across refresh.
-  - Verify: TC-VEH-01, 02, 03, 05, 07 (E2E).
+  - Verify: component tests ✔ TC-VEH-01, 02, 03, 05, 07. **Pending:** FR-VEH-05 (odometer derived from latest log) — needs fuel logs (T16). Archive ✔.
   - Deps: T3, T6, T7.
 
-- [ ] **T9 — Delete vehicle with typed confirmation** (S)
+- [x] **T9 — Delete vehicle with typed confirmation** (S)
   - Acceptance: FR-VEH-03; requires typing `DELETE`; cascades to linked rows; other vehicles unchanged.
-  - Verify: TC-VEH-06 (E2E and SQL check of cascade).
+  - Verify: DB tests ✔ (soft-delete of vehicle and linked rows, cross-user blocked, double delete blocked); UI test ✔ (DELETE typed to enable). **Decision:** soft delete, not hard cascade — see schema doc N-7. **Open:** a deleted registration number cannot be re-added; a restore flow is needed (flagged to owner).
   - Deps: T8.
 
 **CP-B (part 2)** — vehicles fully manageable.

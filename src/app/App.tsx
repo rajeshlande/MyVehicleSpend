@@ -5,6 +5,8 @@ import { SignUpPage } from '../features/auth/SignUpPage';
 import { RequireAuth } from '../features/auth/RequireAuth';
 import { AppShell } from '../components/AppShell';
 import { AddPage, ExpensesPage, HomePage, LoansPage, MorePage } from '../features/placeholders/Screens';
+import { VehicleProvider } from '../features/vehicles/VehicleContext';
+import { VehiclesPage } from '../features/vehicles/VehiclesPage';
 import { isConfigured } from '../data/supabase';
 
 function ConfigMissing() {
@@ -31,15 +33,18 @@ export function App() {
             path="/*"
             element={
               <RequireAuth>
-                <AppShell>
-                  <Routes>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/expenses" element={<ExpensesPage />} />
-                    <Route path="/loans" element={<LoansPage />} />
-                    <Route path="/add" element={<AddPage />} />
-                    <Route path="/more" element={<MorePage />} />
-                  </Routes>
-                </AppShell>
+                <VehicleProvider>
+                  <AppShell>
+                    <Routes>
+                      <Route path="/" element={<HomePage />} />
+                      <Route path="/expenses" element={<ExpensesPage />} />
+                      <Route path="/loans" element={<LoansPage />} />
+                      <Route path="/add" element={<AddPage />} />
+                      <Route path="/more" element={<MorePage />} />
+                      <Route path="/vehicles" element={<VehiclesPage />} />
+                    </Routes>
+                  </AppShell>
+                </VehicleProvider>
               </RequireAuth>
             }
           />

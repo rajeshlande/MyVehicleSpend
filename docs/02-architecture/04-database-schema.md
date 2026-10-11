@@ -483,6 +483,8 @@ Changes made while turning this design into migrations. Each was verified by `te
 | N-5 | Repeated RLS policies shown as a comment | Expanded to full policies for all 6 owned tables | Explicit policies are needed for review. |
 | N-6 | Views not explicitly granted | `grant select` on both views to `authenticated` | Views are created after the table-level grant. |
 
+| N-7 | Vehicle delete described as cascade removal (TC-VEH-06, SRS FR-VEH-03) | `delete_vehicle` RPC soft-deletes the vehicle and its expenses, fuel logs, reminders and loans in one transaction (migration 0006) | Keeps deletes replicable for the offline sync engine (SDD §7). Hard removal is left to the account-deletion job. A deleted registration number stays blocked by the unique index; a restore flow is an open item. |
+
 **Known limitation of `v_fuel_efficiency`:** it uses the litres of the current fill only. It therefore does not match TC-FUEL-02 when partial fills sit between full tanks. The app's mileage algorithm (SDD §5.6, task T15) is the source of truth for displayed km/l. The view is for simple reporting only.
 
 **Test database:** tests run against PGlite (PostgreSQL 17 in-process) with a shim for the Supabase-only parts (`anon`/`authenticated` roles, `auth.users`, `auth.uid()`). This does not replace running the migrations on a real Supabase project in staging.
