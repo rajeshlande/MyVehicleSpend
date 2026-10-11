@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+# Build output
+dist/
+build/
+# Env / secrets (never commit)
+.env
+.env.*
+!.env.example
+# Supabase local
+supabase/.branches/
+supabase/.temp/
+# Logs & OS
+*.log
+.DS_Store
+Thumbs.db
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea/
+# PWA generated
+dev-dist/
+# Local backups & generated docs (never commit personal data dumps)
+backups/
+docs/generated/

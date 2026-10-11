@@ -1,0 +1,261 @@
+# Task List: My Vehicle Spend v1.0
+
+Legend: `[ ]` open · `[x]` done · Size: XS (1 file) · S (1–2) · M (3–5) · L (5–8; split if larger)
+Each task also requires the Definition of Done in `tasks/plan.md` §5.
+Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
+
+---
+
+## Phase 0 — Setup
+
+- [x] **T1 — Scaffold the app and tooling** (M)
+  - Acceptance: Vite + React 18 + TypeScript strict app in `src/`; ESLint, Prettier (per coding standards), Vitest, Playwright installed; `.env.example` present; one smoke test; `.github/workflows/ci.yml` runs lint, typecheck, test, build.
+  - Verify: `npm run lint && npm run typecheck && npm test -- --run && npm run build` all pass.
+  - Deps: None.
+
+- [x] **T2 — Database schema migration 0001** (M)
+  - Acceptance: `supabase/migrations/0001_init.sql` contains exactly the tables, CHECKs, composite FKs, triggers and indexes from `docs/02-architecture/04-database-schema.md` §3.
+  - Verify: `npx supabase start && npx supabase db reset` succeeds; the `\d` output matches the doc.
+  - Deps: T1.
+
+- [x] **T3 — RLS policies and RPC/trigger functions** (M)
+  - Acceptance: RLS enabled on all tables; owner-only policies; `anon` revoked; `add_fuel_log`, `check_odometer_monotonic` installed; views with `security_invoker`.
+  - Verify: SQL test script `supabase/tests/rls.sql` covers TC-SEC-01 to TC-SEC-04 and passes.
+  - Deps: T2.
+
+- [x] **T4 — Seed system expense categories** (XS)
+  - Acceptance: `supabase/seed.sql` inserts every system category from the schema doc §7 with `user_id` null.
+  - Verify: `select count(*) from expense_categories where user_id is null` equals the expected count written in the seed test.
+  - Deps: T2.
+
+**CP-A Foundation — PASSED (2026-10-11).** lint ✔ typecheck ✔ 21 tests ✔ build ✔. Notes: DB tests run on PGlite, not Docker-based Supabase (see schema doc §11).
+
+---
+
+## Phase 1 — Auth & Shell
+
+- [ ] **T5 — Sign up, sign in, sign out, session persistence** (M)
+  - Acceptance: FR-AUTH-01, 02, 04, 06; password min 8 characters; wrong password message; signed-out users redirected to login; profile row created on sign-up.
+  - Verify: component tests with a mocked Supabase client; E2E for TC-AUTH-01, 03, 04, 06 on local Supabase.
+  - Deps: T3.
+
+- [ ] **T6 — App shell and navigation** (M)
+  - Acceptance: five-tab bottom nav with text labels (desktop sidebar ≥1024 px); colour tokens from UI/UX §6.1 with light and dark themes; empty-state components; offline banner placeholder.
+  - Verify: TC-UI-01, TC-UI-02 (tap targets), TC-UI-06 (no horizontal scroll at 320 px).
+  - Deps: T5.
+
+**CP-B (part 1)** — user can sign up and see the shell.
+
+---
+
+## Phase 2 — Vehicles
+
+- [ ] **T7 — Registration number and vehicle validation (pure)** (S)
+  - Acceptance: normalise to upper-case no spaces; pattern from schema; display format `MH 12 AB 1234`; Zod schema for vehicle input (FR-VEH-01, FR-VEH-06).
+  - Verify: unit tests; TC-VEH-04 invalid format rejected.
+  - Deps: T1.
+
+- [ ] **T8 — Vehicle create, edit, list, active-vehicle switch** (M)
+  - Acceptance: FR-VEH-01, 02, 04, 05; duplicate reg shows "A vehicle with this number already exists." (TC-VEH-03); active vehicle persists across refresh.
+  - Verify: TC-VEH-01, 02, 03, 05, 07 (E2E).
+  - Deps: T3, T6, T7.
+
+- [ ] **T9 — Delete vehicle with typed confirmation** (S)
+  - Acceptance: FR-VEH-03; requires typing `DELETE`; cascades to linked rows; other vehicles unchanged.
+  - Verify: TC-VEH-06 (E2E and SQL check of cascade).
+  - Deps: T8.
+
+**CP-B (part 2)** — vehicles fully manageable.
+
+---
+
+## Phase 3 — Money & Expenses
+
+- [ ] **T10 — Money utilities (pure)** (S)
+  - Acceptance: `round2`; INR formatting via `Intl.NumberFormat('en-IN')` (₹1,23,456.00); MoneyInput parses `123456.5` and `1,23,456.5`; amount bounds 0 < x ≤ 1 crore.
+  - Verify: unit tests for TC-EXP-02 (boundaries) and TC-EXP-03 (grouping).
+  - Deps: T1.
+
+- [ ] **T11 — Expense add, edit, delete, list (core fields)** (M)
+  - Acceptance: FR-EXP-01 (all fields except receipts), FR-EXP-02, default date today, vehicle and UPI defaults; soft delete; list sorted newest first.
+  - Verify: TC-EXP-01 (without photo), TC-EXP-08.
+  - Deps: T8, T10, T4.
+
+- [ ] **T12 — Expense filters, search, duplicate, quick add** (M)
+  - Acceptance: FR-EXP-03, 04, 05, 09; totals update with filters; quick add reachable in ≤ 3 taps.
+  - Verify: TC-EXP-05, 06, 07, 10 (timed run).
+  - Deps: T11.
+
+- [ ] **T13 — Odometer warning on expenses** (XS)
+  - Acceptance: FR-EXP-07; lower odometer shows warning with *Save anyway* requiring a note; the fuel path still uses the DB trigger (RULE-03).
+  - Verify: TC-EXP-04.
+  - Deps: T11.
+
+- [ ] **T14 — Receipt upload** (M)
+  - Acceptance: up to 3 photos; browser compression to ≤ 1 MB; JPEG, PNG, WebP, PDF; ≤ 5 MB raw; private bucket path `{uid}/{expense_id}/{n}.jpg`; storage policy by folder; signed URLs with 1 h expiry.
+  - Verify: TC-EXP-09, TC-DATA-04; storage policy SQL test.
+  - Deps: T11, T3.
+
+**CP-B (part 3)** — expenses usable end-to-end.
+
+---
+
+## Phase 4 — Fuel
+
+- [ ] **T15 — Mileage and cost-per-km (pure)** (M)
+  - Acceptance: SDD §5.6 algorithm: intervals between full tanks; partial litres included; reject distance ≤ 0; average, best, worst; cost per km; "insufficient data" under 50 km or fewer than two full tanks.
+  - Verify: unit tests for TC-FUEL-02 (expected 8.33 km/l), TC-FUEL-03, TC-FUEL-05 (₹10.00/km), TC-FUEL-07.
+  - Deps: T1.
+
+- [ ] **T16a — Fuel log RPC and form** (M)
+  - Acceptance: `add_fuel_log` RPC creates fuel row and linked expense atomically; idempotent on `p_id`; form auto-calculates total; full tank toggle; station and payment mode; FR-FUEL-01, 04.
+  - Verify: TC-FUEL-01, TC-FUEL-04 (odometer error shown as plain message); SQL test for idempotency (second call with same id creates nothing).
+  - Deps: T3, T11, T15.
+
+- [ ] **T16b — Fuel history and EV charging** (S)
+  - Acceptance: fuel list with km/l per fill; EV vehicles log kWh and hide litres (FR-FUEL-05).
+  - Verify: TC-FUEL-06 (E2E).
+  - Deps: T16a.
+
+**CP-B (part 4)** — **Core usable checkpoint.** Owner reviews before Phase 5.
+
+---
+
+## Phase 5 — Loans
+
+- [ ] **T17 — EMI engine (pure, test-first)** (M)
+  - Acceptance: reducing-balance EMI per SDD §5.1; flat-rate EMI per corrected formula (N in months); zero-rate case; schedule with last row adjustment (SDD §5.2); total principal equals loan amount exactly.
+  - Verify: TC-LOAN-01 (₹16,703.92 for 800000 @ 9.25% × 60), TC-LOAN-02, TC-LOAN-03, TC-LOAN-04 (₹17,222.22). Cross-check against spreadsheet `PMT` before marking done.
+  - Deps: T1.
+
+- [ ] **T18 — Loan CRUD and schedule view** (M)
+  - Acceptance: FR-LOAN-01, 03, 11; loan form with computed EMI (user may override); schedule rows inserted in bulk into `loan_payments`; close loan.
+  - Verify: TC-LOAN-11 (E2E) plus a row-count check (60 rows).
+  - Deps: T17, T8.
+
+- [ ] **T19 — Record EMI payment** (M)
+  - Acceptance: `record_loan_payment` RPC; status paid/late (FR-LOAN-05); creates expense under Loan & Finance with late fee and bounce included; interest stored separately (FR-LOAN-09).
+  - Verify: TC-LOAN-05, TC-LOAN-06.
+  - Deps: T18, T16a pattern.
+
+- [ ] **T20 — Prepayment and foreclosure simulators (pure + UI)** (M)
+  - Acceptance: reduce-tenure and reduce-EMI formulas (SDD §5.4, §5.5); foreclosure estimate with charge %; loan summary (outstanding, interest paid, interest remaining, months remaining) (FR-LOAN-06, 07, 08).
+  - Verify: TC-LOAN-07, 08, 09, 10.
+  - Deps: T17, T18.
+
+**CP-C (part 1)** — loan maths verified and loan flows usable.
+
+---
+
+## Phase 6 — Reminders
+
+- [ ] **T21 — Reminders CRUD and due logic** (M)
+  - Acceptance: FR-REM-01, 02, 05; types incl. service by km; "due soon" window = due date − lead days; overdue badge; insurance fields stored.
+  - Verify: TC-REM-01, TC-REM-02, TC-REM-04.
+  - Deps: T8.
+
+- [ ] **T22 — Mark done creates expense** (S)
+  - Acceptance: FR-REM-03; `is_done`, `done_on`; optional expense created under the matching category.
+  - Verify: TC-REM-03.
+  - Deps: T21, T11.
+
+- [ ] **T23 — Browser notification opt-in (Should)** (S)
+  - Acceptance: FR-REM-04; permission asked only after user taps *Turn on reminders*; refusal does not break the app.
+  - Verify: TC-REM-05.
+  - Deps: T22.
+
+**CP-C (part 2)** — loans and reminders complete.
+
+---
+
+## Phase 7 — Dashboard & Reports
+
+- [ ] **T24 — Dashboard** (M)
+  - Acceptance: FR-RPT-01 and 02 — monthly total, category donut, monthly bar trend, cost/km, cost/month, due-soon list, loan outstanding; presets (this month, last month, this FY, last 12 months, custom); empty state with no NaN.
+  - Verify: TC-RPT-01 (totals to the paisa against fixtures), TC-RPT-04.
+  - Deps: T15, T20, T22.
+
+- [ ] **T25 — Reports and CSV export** (M)
+  - Acceptance: FR-RPT-03, 04, 05; Indian FY 1 Apr to 31 Mar; monthly category table; CSV with UTF-8 BOM for expenses, fuel and loan schedule.
+  - Verify: TC-RPT-02, TC-RPT-03 (open in Excel/LibreOffice).
+  - Deps: T24.
+
+**CP-D (part 1)** — dashboard and reports.
+
+---
+
+## Phase 8 — Data & PWA
+
+- [ ] **T26 — JSON backup and restore** (M)
+  - Acceptance: FR-DATA-01, 02; file includes schema version; restore only into empty account; IDs preserved.
+  - Verify: TC-DATA-01, TC-DATA-02.
+  - Deps: T25.
+
+- [ ] **T27 — Account deletion Edge Function** (M)
+  - Acceptance: FR-DATA-03; `delete-account` verifies JWT, deletes `receipts/{uid}/` objects, deletes auth user (cascade); typed `DELETE` confirmation; service role key set via `supabase secrets` only.
+  - Verify: TC-DATA-03; sign-in fails after deletion.
+  - Deps: T14, T5.
+
+- [ ] **T28 — PWA shell: manifest, icons, service worker** (M)
+  - Acceptance: FR-PWA-01, 02, 06; manifest with 192, 512 and maskable icons; `registerType: 'prompt'`; app shell precached; update banner.
+  - Verify: TC-PWA-01 (Lighthouse PWA), TC-PWA-02 (airplane mode reload), TC-PWA-06.
+  - Deps: T6.
+
+- [ ] **T29a — Offline read cache (Dexie)** (M)
+  - Acceptance: FR-PWA-03; last synced data viewable offline with "Last updated" time.
+  - Verify: TC-PWA-03.
+  - Deps: T28, T24.
+
+- [ ] **T29b — Outbox and sync engine** (L → keep to one slice)
+  - Acceptance: FR-PWA-04, 05; offline inserts stored in `outbox`; replay on `online` and on app open; badge with pending count; retries with back-off, max 5 (NFR-REL-02).
+  - Verify: TC-PWA-04 (expense and fuel rows appear in Supabase, no duplicates).
+  - Deps: T29a, T16a.
+
+- [ ] **T29c — Idempotent retry safety** (S)
+  - Acceptance: retries reuse the same client UUID; RPC `ON CONFLICT DO NOTHING` verified.
+  - Verify: TC-PWA-05 (simulated drop after commit gives one row).
+  - Deps: T29b.
+
+**CP-D (part 2)** — backup, deletion, PWA install, offline queue.
+
+---
+
+## Phase 9 — Hardening
+
+- [ ] **T30 — Security headers, CSP and secret checks** (S)
+  - Acceptance: `public/_headers` with CSP, HSTS, nosniff, frame-ancestors none (Deployment Guide §3.1); no `service_role` in bundle; no `dangerouslySetInnerHTML`; tokens not logged.
+  - Verify: TC-SEC-05, 06, 07 (XSS vendor name shown as text), 08; `npm audit --omit=dev` has no high or critical findings.
+  - Deps: T27.
+
+- [ ] **T31 — Accessibility and responsive pass** (S)
+  - Acceptance: labels on all inputs; contrast ≥ 4.5:1 in both themes; keyboard path for add-expense; axe-core shows zero critical violations.
+  - Verify: TC-UI-03, 04, 05.
+  - Deps: all UI tasks.
+
+- [ ] **T32 — Performance budget** (S)
+  - Acceptance: initial JS ≤ 250 KB gzip; route-level lazy loading for Reports and Loans; dashboard with 5,000 rows ≤ 1.5 s.
+  - Verify: TC-PERF-01, 02, 03 (Lighthouse mid-range profile).
+  - Deps: T24.
+
+**CP-E (part 1)** — quality gates green.
+
+---
+
+## Phase 10 — Testing, Release
+
+- [ ] **T33 — Full system test run** (M)
+  - Acceptance: every STC executed on staging; results recorded in `docs/04-testing/02-system-test-cases.md` status column; each failure logged in `03-defect-tracking-log.md`.
+  - Verify: all Must cases pass; zero open Critical or High defects.
+  - Deps: T30–T32.
+
+- [ ] **T34 — Staging deploy and smoke test** (S)
+  - Acceptance: `develop` deploys to staging; migrations applied via `db.yml`; deployment smoke checklist (Deployment Guide §6) passes; keep-alive workflow enabled.
+  - Verify: smoke checklist; `curl -I` shows CSP and HSTS.
+  - Deps: T33.
+
+- [ ] **T35 — UAT and release v1.0.0** (S)
+  - Acceptance: UAT report signed (`04-uat-report.md`); `CHANGELOG.md` and release notes updated; `main` merged; tag `v1.0.0`; production smoke test passes.
+  - Verify: owner sign-off recorded; production URL works on Android and iPhone.
+  - Deps: T34.
+
+**CP-E (part 2)** — release complete.
