@@ -105,3 +105,20 @@ export async function deleteVehicle(id: string): Promise<void> {
   const { error } = await getSupabase().rpc('delete_vehicle', { p_vehicle_id: id });
   if (error) throw mapDbError(error);
 }
+
+/** Soft-deleted vehicles of the signed-in user, most recently deleted first (T9b). */
+export async function listDeletedVehicles(): Promise<Vehicle[]> {
+  const { data, error } = await getSupabase()
+    .from('vehicles')
+    .select(COLUMNS)
+    .not('deleted_at', 'is', null)
+    .order('deleted_at', { ascending: false });
+  if (error) throw mapDbError(error);
+  return (data as unknown as VehicleRow[]).map(toVehicle);
+}
+
+/** Restores a deleted vehicle and the rows removed with it (migration 0007). */
+export async function restoreVehicle(id: string): Promise<void> {
+  const { error } = await getSupabase().rpc('restore_vehicle', { p_vehicle_id: id });
+  if (error) throw mapDbError(error);
+}

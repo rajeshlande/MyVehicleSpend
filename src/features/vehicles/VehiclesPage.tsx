@@ -1,8 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useVehicles } from './VehicleContext';
 import { VehicleForm } from './VehicleForm';
-import { createVehicle, deleteVehicle, updateVehicle, type Vehicle } from '../../data/vehicles';
-import { formatRegistration } from '../../core/vehicles/registration';
+import {
+  createVehicle,
+  deleteVehicle,
+  listDeletedVehicles,
+  restoreVehicle,
+  updateVehicle,
+  type Vehicle,
+} from '../../data/vehicles';
+import { formatRegistration, normalizeRegistration } from '../../core/vehicles/registration';
 import type { VehicleInput } from '../../core/vehicles/schema';
 
 type Mode = { kind: 'list' } | { kind: 'add' } | { kind: 'edit'; vehicle: Vehicle };
@@ -12,18 +19,58 @@ export function VehiclesPage() {
   const [mode, setMode] = useState<Mode>({ kind: 'list' });
   const [deleteTarget, setDeleteTarget] = useState<Vehicle | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [deleted, setDeleted] = useState<Vehicle[]>([]);
+  // Set when a new vehicle uses the number of a deleted one (T9b).
+  const [restoreOffer, setRestoreOffer] = useState<Vehicle | null>(null);
+
+  async function loadDeleted() {
+    try {
+      setDeleted(await listDeletedVehicles());
+    } catch {
+      setDeleted([]);
+    }
+  }
+
+  useEffect(() => {
+    void loadDeleted();
+  }, []);
+
+  async function restore(v: Vehicle) {
+    await restoreVehicle(v.id);
+    setActiveVehicleId(v.id);
+    setRestoreOffer(null);
+    setMessage('Vehicle restored.');
+    await reload();
+    await loadDeleted();
+    setMode({ kind: 'list' });
+  }
 
   async function save(input: VehicleInput) {
     if (mode.kind === 'edit') {
       await updateVehicle(mode.vehicle.id, { ...input, isArchived: mode.vehicle.isArchived });
       setMessage('Vehicle updated.');
     } else {
+      const reg = normalizeRegistration(input.registrationNo);
+      const match =
+        deleted.find((d) => d.registrationNo === reg) ??
+        (await findDeleted(reg).catch(() => undefined)); // lookup failure must not block a save; the unique index still guards
+      if (match) {
+        setRestoreOffer(match);
+        setMode({ kind: 'list' });
+        return;
+      }
       const created = await createVehicle(input);
       setActiveVehicleId(created.id);
       setMessage('Vehicle added.');
     }
     await reload();
     setMode({ kind: 'list' });
+  }
+
+  async function findDeleted(reg: string): Promise<Vehicle | undefined> {
+    const list = await listDeletedVehicles();
+    setDeleted(list);
+    return list.find((d) => d.registrationNo === reg);
   }
 
   async function toggleArchive(v: Vehicle) {
@@ -62,6 +109,20 @@ export function VehiclesPage() {
         <p role="status" className="form-ok">
           {message}
         </p>
+      )}
+      {restoreOffer && (
+        <div className="warning-box" role="alert">
+          <p>
+            {formatRegistration(restoreOffer.registrationNo)} was deleted earlier. Restore that
+            vehicle instead of adding a new one?
+          </p>
+          <button type="button" className="btn-primary" onClick={() => void restore(restoreOffer)}>
+            Restore it
+          </button>{' '}
+          <button type="button" className="btn-secondary" onClick={() => setRestoreOffer(null)}>
+            Not now
+          </button>
+        </div>
       )}
       {vehicles === undefined && <p role="status">Loading vehicles…</p>}
       {vehicles !== undefined && vehicles.length === 0 && (
@@ -127,6 +188,31 @@ export function VehiclesPage() {
           </button>
         </>
       )}
+      {deleted.length > 0 && (
+        <section aria-labelledby="deleted-heading" className="deleted-list">
+          <h2 id="deleted-heading">Deleted vehicles</h2>
+          <ul className="vehicle-list">
+            {deleted.map((v) => (
+              <li key={v.id} className="vehicle-card">
+                <div>
+                  <strong>{formatRegistration(v.registrationNo)}</strong>
+                  <div className="hint">
+                    {[v.make, v.model].filter(Boolean).join(' ') || v.vehicleType}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  aria-label={`Restore ${formatRegistration(v.registrationNo)}`}
+                  onClick={() => void restore(v)}
+                >
+                  Restore
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
       {deleteTarget && (
         <DeleteVehicleDialog
           vehicle={deleteTarget}
@@ -136,6 +222,7 @@ export function VehiclesPage() {
             setDeleteTarget(null);
             setMessage('Vehicle deleted.');
             await reload();
+            await loadDeleted();
           }}
         />
       )}

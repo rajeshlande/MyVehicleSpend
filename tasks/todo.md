@@ -71,9 +71,9 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
 
 ## Phase 3 — Money & Expenses
 
-- [ ] **T9b — Restore deleted vehicle** (S)
+- [x] **T9b — Restore deleted vehicle** (S)
   - Acceptance: a "Deleted vehicles" list on the Vehicles page with a Restore button for each; adding a vehicle whose registration number matches a deleted one offers Restore instead of failing with "already exists"; restore brings back the vehicle and its linked rows (expenses, fuel logs, reminders, loans) that the delete RPC soft-deleted.
-  - Verify: DB test (restore by owner works; cross-user restore blocked; restore of a live vehicle is a no-op error); UI test (Restore shows and works; duplicate-number message offers Restore).
+  - Verify: DB test ✔ `tests/db/restore.test.ts` (owner restore; cross-user blocked; not-deleted rejected; earlier single deletes stay deleted; re-add blocked by unique index). UI test ✔ `restore.test.tsx`. Migration 0007.
   - Deps: T9.
 
 - [x] **T10 — Money utilities (pure)** (S)
