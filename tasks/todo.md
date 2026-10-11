@@ -98,7 +98,7 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
 
 - [x] **T14 — Receipt upload** (M)
   - Acceptance: up to 3 photos; browser compression to ≤ 1 MB; JPEG, PNG, WebP, PDF; ≤ 5 MB raw; private bucket path `{uid}/{expense_id}/{n}.jpg`; storage policy by folder; signed URLs with 1 h expiry.
-  - Verify: TC-EXP-09 ✔ (`receipts.test.tsx`, `core/receipts/rules.test.ts`); storage policy ✔ (`tests/db/storage.test.ts`, migration 0008). **Pending:** TC-DATA-04 HTTP check (no-token request → 400/403) needs the live project; browser compression to ≤ 1 MB (`compressImage`) needs a real-browser check.
+  - Verify: TC-EXP-09 ✔ (`receipts.test.tsx`, `core/receipts/rules.test.ts`); storage policy ✔ (`tests/db/storage.test.ts`, migration 0008). Browser compression ✔ in Chromium (`scripts/receipt-compress-check.mjs`: 33.4 MB photo → 0.96 MB JPEG, max side 2000 px). **Pending:** TC-DATA-04 HTTP check (no-token request → 400/403) needs the live project.
   - Deps: T11, T3.
 
 **CP-B (part 3)** — expenses usable end-to-end.
