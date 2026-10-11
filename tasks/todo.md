@@ -41,7 +41,7 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
 
 - [x] **T6 — App shell and navigation** (M)
   - Acceptance: five-tab bottom nav with text labels (desktop sidebar ≥1024 px); colour tokens from UI/UX §6.1 with light and dark themes; empty-state components; offline banner placeholder.
-  - Verify: TC-UI-01 ✔ (component test). **Pending (needs a browser):** TC-UI-02 tap-target measurement and TC-UI-06 no horizontal scroll at 320 px.
+  - Verify: TC-UI-01 ✔ (component test). TC-UI-02 ✔ and TC-UI-06 ✔ measured in Chromium at 320 px and 1280 px (`scripts/browser-checks.mjs`): no horizontal scroll, all interactive elements ≥ 44 px on sign-in, sign-up, shell and More pages. Fixed 17 px inline links (`main a` min-height 44 px). Caveat: signed-in content pages were measured only in the loading state (no backend in the sandbox). Finding: the centre “+” Add button's label is nearly invisible, to fix.
   - Deps: T5.
 
 **CP-B (part 1)** — user can sign up and see the shell.

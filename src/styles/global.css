@@ -21,6 +21,13 @@ a {
   color: var(--primary);
 }
 
+/* Inline text links in page content keep a 44px tap target (TC-UI-02). */
+main a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
 h1 {
   font-size: 24px;
   margin: var(--space-2) 0;
