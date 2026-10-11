@@ -6,6 +6,7 @@ import { RequireAuth } from '../features/auth/RequireAuth';
 import { AppShell } from '../components/AppShell';
 import { HomePage, LoansPage, MorePage } from '../features/placeholders/Screens';
 import { QuickAddPage } from '../features/expenses/QuickAddPage';
+import { FuelPage } from '../features/fuel/FuelPage';
 import { ExpensesPage } from '../features/expenses/ExpensesPage';
 import { VehicleProvider } from '../features/vehicles/VehicleContext';
 import { VehiclesPage } from '../features/vehicles/VehiclesPage';
@@ -45,6 +46,7 @@ export function App() {
                       <Route path="/add" element={<QuickAddPage />} />
                       <Route path="/more" element={<MorePage />} />
                       <Route path="/vehicles" element={<VehiclesPage />} />
+                      <Route path="/fuel" element={<FuelPage />} />
                     </Routes>
                   </AppShell>
                 </VehicleProvider>

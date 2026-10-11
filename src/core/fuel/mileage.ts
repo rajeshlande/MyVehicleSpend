@@ -13,6 +13,8 @@ export interface FuelFill {
 
 export interface MileageInterval {
   endDate: string;
+  /** Odometer of the later full tank; lets the UI match km/l to a fill. */
+  toOdometerKm: number;
   distanceKm: number;
   litres: number;
   kmpl: number;
@@ -43,7 +45,13 @@ export function computeMileage(fills: readonly FuelFill[]): MileageResult {
     let litres = 0;
     for (let j = prev.index + 1; j <= cur.index; j++) litres += sorted[j]?.litres ?? 0;
     if (distanceKm <= 0 || litres <= 0) continue; // reject, do not count
-    intervals.push({ endDate: cur.fill.filledOn, distanceKm, litres, kmpl: distanceKm / litres });
+    intervals.push({
+      endDate: cur.fill.filledOn,
+      toOdometerKm: cur.fill.odometerKm,
+      distanceKm,
+      litres,
+      kmpl: distanceKm / litres,
+    });
   }
 
   if (fulls.length < 2) {

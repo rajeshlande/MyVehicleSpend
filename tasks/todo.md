@@ -114,14 +114,14 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
   - ✔ TC-FUEL-03, TC-FUEL-05, TC-FUEL-07 (`mileage.test.ts`, 8 tests).
   - Deps: T1.
 
-- [ ] **T16a — Fuel log RPC and form** (M)
+- [x] **T16a — Fuel log RPC and form** (M)
   - Acceptance: `add_fuel_log` RPC creates fuel row and linked expense atomically; idempotent on `p_id`; form auto-calculates total; full tank toggle; station and payment mode; FR-FUEL-01, 04.
-  - Verify: TC-FUEL-01, TC-FUEL-04 (odometer error shown as plain message); SQL test for idempotency (second call with same id creates nothing).
+  - Verify: TC-FUEL-01 ✔ and TC-FUEL-04 ✔ (`fuel.test.tsx`, plain DB message shown); idempotency ✔ and atomic rollback ✔ (`tests/db/fuel.test.ts`, migration 0009 adds kWh and the litres-or-kWh check).
   - Deps: T3, T11, T15.
 
-- [ ] **T16b — Fuel history and EV charging** (S)
+- [x] **T16b — Fuel history and EV charging** (S)
   - Acceptance: fuel list with km/l per fill; EV vehicles log kWh and hide litres (FR-FUEL-05).
-  - Verify: TC-FUEL-06 (E2E).
+  - Verify: TC-FUEL-06 component part ✔ (km/l per fill, EV shows kWh and km/kWh, no litres). **Pending:** the E2E run on a live project.
   - Deps: T16a.
 
 **CP-B (part 4)** — **Core usable checkpoint.** Owner reviews before Phase 5.

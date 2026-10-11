@@ -74,6 +74,9 @@ export function MorePage() {
         <li>
           <Link to="/vehicles">Vehicles</Link>
         </li>
+        <li>
+          <Link to="/fuel">Fuel log</Link>
+        </li>
         <li>Reports (coming in Phase 7)</li>
         <li>Settings (coming in Phase 8)</li>
       </ul>

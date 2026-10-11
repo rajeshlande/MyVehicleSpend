@@ -22,6 +22,7 @@ describe('computeMileage (SDD §5.6)', () => {
     expect(r.intervals[0]?.distanceKm).toBe(500);
     expect(r.intervals[0]?.litres).toBe(30);
     expect(r.intervals[0]?.kmpl).toBeCloseTo(16.67, 2);
+    expect(r.intervals[0]?.toOdometerKm).toBe(48500);
   });
 
   it('gives average, best and worst with the dates of the best and worst intervals (TC-FUEL-03)', () => {
