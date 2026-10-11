@@ -35,28 +35,20 @@ export function HomePage() {
       <h1>Home</h1>
       <section className="vehicle-card" aria-labelledby="active-vehicle">
         <div>
-          <p className="hint" id="active-vehicle">Active vehicle</p>
+          <p className="hint" id="active-vehicle">
+            Active vehicle
+          </p>
           <strong>{formatRegistration(activeVehicle.registrationNo)}</strong>
           <div className="hint">
-            {[activeVehicle.make, activeVehicle.model].filter(Boolean).join(' ') || activeVehicle.vehicleType} ·{' '}
-            {activeVehicle.startOdometerKm.toLocaleString('en-IN')} km
+            {[activeVehicle.make, activeVehicle.model].filter(Boolean).join(' ') ||
+              activeVehicle.vehicleType}{' '}
+            · {activeVehicle.startOdometerKm.toLocaleString('en-IN')} km
           </div>
         </div>
         <Link to="/vehicles">Manage vehicles</Link>
       </section>
       <EmptyState title="No expenses yet">
         <p>Logging expenses and fuel arrives in Phases 3 and 4.</p>
-      </EmptyState>
-    </>
-  );
-}
-
-export function ExpensesPage() {
-  return (
-    <>
-      <h1>Expenses</h1>
-      <EmptyState title="No expenses yet">
-        <p>Log your first petrol fill or expense to see it here.</p>
       </EmptyState>
     </>
   );

@@ -4,7 +4,8 @@ import { LoginPage } from '../features/auth/LoginPage';
 import { SignUpPage } from '../features/auth/SignUpPage';
 import { RequireAuth } from '../features/auth/RequireAuth';
 import { AppShell } from '../components/AppShell';
-import { AddPage, ExpensesPage, HomePage, LoansPage, MorePage } from '../features/placeholders/Screens';
+import { AddPage, HomePage, LoansPage, MorePage } from '../features/placeholders/Screens';
+import { ExpensesPage } from '../features/expenses/ExpensesPage';
 import { VehicleProvider } from '../features/vehicles/VehicleContext';
 import { VehiclesPage } from '../features/vehicles/VehiclesPage';
 import { isConfigured } from '../data/supabase';
@@ -14,8 +15,9 @@ function ConfigMissing() {
     <main className="auth-page">
       <h1>Setup needed</h1>
       <p>
-        This build has no Supabase settings. Copy <code>.env.example</code> to <code>.env.local</code> and
-        fill in <code>VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_ANON_KEY</code>.
+        This build has no Supabase settings. Copy <code>.env.example</code> to{' '}
+        <code>.env.local</code> and fill in <code>VITE_SUPABASE_URL</code> and{' '}
+        <code>VITE_SUPABASE_ANON_KEY</code>.
       </p>
     </main>
   );

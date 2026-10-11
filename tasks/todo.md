@@ -71,14 +71,14 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
 
 ## Phase 3 — Money & Expenses
 
-- [ ] **T10 — Money utilities (pure)** (S)
+- [x] **T10 — Money utilities (pure)** (S)
   - Acceptance: `round2`; INR formatting via `Intl.NumberFormat('en-IN')` (₹1,23,456.00); MoneyInput parses `123456.5` and `1,23,456.5`; amount bounds 0 < x ≤ 1 crore.
   - Verify: unit tests for TC-EXP-02 (boundaries) and TC-EXP-03 (grouping).
   - Deps: T1.
 
-- [ ] **T11 — Expense add, edit, delete, list (core fields)** (M)
+- [x] **T11 — Expense add, edit, delete, list (core fields)** (M)
   - Acceptance: FR-EXP-01 (all fields except receipts), FR-EXP-02, default date today, vehicle and UPI defaults; soft delete; list sorted newest first.
-  - Verify: TC-EXP-01 (without photo), TC-EXP-08.
+  - Verify: TC-EXP-01 (without photo), TC-EXP-08. ✔ component tests (13 in `expenses.test.tsx`). **Pending:** receipt photo (T14).
   - Deps: T8, T10, T4.
 
 - [ ] **T12 — Expense filters, search, duplicate, quick add** (M)
@@ -86,9 +86,9 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
   - Verify: TC-EXP-05, 06, 07, 10 (timed run).
   - Deps: T11.
 
-- [ ] **T13 — Odometer warning on expenses** (XS)
-  - Acceptance: FR-EXP-07; lower odometer shows warning with *Save anyway* requiring a note; the fuel path still uses the DB trigger (RULE-03).
-  - Verify: TC-EXP-04.
+- [x] **T13 — Odometer warning on expenses** (XS)
+  - Acceptance: FR-EXP-07; lower odometer shows warning with _Save anyway_ requiring a note; the fuel path still uses the DB trigger (RULE-03).
+  - Verify: TC-EXP-04 ✔ (form test; warning blocks save until a reason is given). Fuel-path trigger is covered by DB tests.
   - Deps: T11.
 
 - [ ] **T14 — Receipt upload** (M)
@@ -160,7 +160,7 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
   - Deps: T21, T11.
 
 - [ ] **T23 — Browser notification opt-in (Should)** (S)
-  - Acceptance: FR-REM-04; permission asked only after user taps *Turn on reminders*; refusal does not break the app.
+  - Acceptance: FR-REM-04; permission asked only after user taps _Turn on reminders_; refusal does not break the app.
   - Verify: TC-REM-05.
   - Deps: T22.
 
