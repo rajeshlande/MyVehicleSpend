@@ -110,7 +110,7 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
 - [x] **T15 — Mileage and cost-per-km (pure)** (M)
   - Acceptance: SDD §5.6 algorithm: intervals between full tanks; partial litres included; reject distance ≤ 0; average, best, worst; cost per km; "insufficient data" under 50 km or fewer than two full tanks.
   - Verify: unit tests for TC-FUEL-02 (expected 8.33 km/l), TC-FUEL-03, TC-FUEL-05 (₹10.00/km), TC-FUEL-07.
-  - **Decision needed:** TC-FUEL-02 expects 8.33 km/l, which counts the starting full tank's 30 L. SDD §5.6 (implemented) gives 500 km / 30 L = 16.67 km/l. `src/core/fuel/mileage.test.ts` follows SDD. TC-FUEL-02 must be corrected or the algorithm changed (owner to decide).
+  - **Decided (owner, 2026-10-11):** SDD §5.6 method, 16.67 km/l for TC-FUEL-02. TC-FUEL-02 in the test document corrected to match. `src/core/fuel/mileage.test.ts` follows SDD.
   - ✔ TC-FUEL-03, TC-FUEL-05, TC-FUEL-07 (`mileage.test.ts`, 8 tests).
   - Deps: T1.
 

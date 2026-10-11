@@ -177,7 +177,7 @@
   | 48,000 | 30.00  | Yes          |
   | 48,250 | 14.00  | No (partial) |
   | 48,500 | 16.00  | Yes          |
-- **Expected:** One interval 48,000 → 48,500 = 500 km over 30.00 + 14.00 + 16.00 = 60.00 L → **8.33 km/l**. (Partial fill litres are included.)
+- **Expected:** One interval 48,000 → 48,500 = 500 km over the litres put in after the starting full tank: 14.00 + 16.00 = 30.00 L → **16.67 km/l**. (Partial fill litres are included. The 30.00 L of the starting full tank belongs to the previous interval, so it is not counted here. Corrected 2026-10-11 per SDD §5.6 and owner decision.)
 - **Status:** Not run
 
 ### TC-FUEL-03 — Average, best, worst (FR-FUEL-03)
