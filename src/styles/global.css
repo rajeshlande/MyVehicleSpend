@@ -1,0 +1,233 @@
+@import './tokens.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+}
+
+a {
+  color: var(--primary);
+}
+
+h1 {
+  font-size: 24px;
+  margin: var(--space-2) 0;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+/* Form */
+label {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+input {
+  display: block;
+  width: 100%;
+  min-height: var(--tap);
+  margin-top: 4px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.hint {
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.form-error {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+/* Buttons: 44 px minimum tap target (NFR-USE-03) */
+.btn-primary,
+.btn-secondary {
+  min-height: var(--tap);
+  min-width: var(--tap);
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--primary);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: var(--primary-contrast);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--primary);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+:focus-visible {
+  outline: 3px solid var(--info);
+  outline-offset: 2px;
+}
+
+/* Auth pages */
+.auth-page {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: var(--space-3) var(--space-2);
+}
+
+/* Shell */
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-main {
+  flex: 1;
+  padding: var(--space-2) var(--space-2) calc(var(--tap) * 2.5);
+  max-width: 960px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 10;
+}
+
+.bottom-nav a,
+.bottom-nav button {
+  flex: 1;
+  min-height: calc(var(--tap) * 1.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font-size: 12px;
+  color: var(--muted);
+  text-decoration: none;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.bottom-nav a[aria-current='page'] {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.nav-add {
+  color: var(--primary-contrast) !important;
+}
+
+.nav-add span.plus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--primary-contrast);
+  font-size: 24px;
+  line-height: 1;
+}
+
+.side-nav {
+  display: none;
+}
+
+.offline-banner {
+  background: var(--warn);
+  color: var(--bg);
+  padding: 8px var(--space-2);
+  text-align: center;
+  font-weight: 600;
+}
+
+.empty-state {
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-3);
+  text-align: center;
+  background: var(--surface);
+}
+
+/* Desktop: sidebar replaces bottom bar (UI/UX §3) */
+@media (min-width: 1024px) {
+  .bottom-nav {
+    display: none;
+  }
+  .app-shell {
+    flex-direction: row;
+  }
+  .side-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 220px;
+    padding: var(--space-2);
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    min-height: 100vh;
+  }
+  .side-nav a,
+  .side-nav button {
+    min-height: var(--tap);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    color: var(--text);
+    text-decoration: none;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    text-align: left;
+  }
+  .side-nav a[aria-current='page'] {
+    background: var(--bg);
+    color: var(--primary);
+    font-weight: 700;
+  }
+  .app-main {
+    padding-bottom: var(--space-3);
+  }
+}

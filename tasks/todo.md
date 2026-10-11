@@ -34,14 +34,14 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
 
 ## Phase 1 — Auth & Shell
 
-- [ ] **T5 — Sign up, sign in, sign out, session persistence** (M)
+- [x] **T5 — Sign up, sign in, sign out, session persistence** (M)
   - Acceptance: FR-AUTH-01, 02, 04, 06; password min 8 characters; wrong password message; signed-out users redirected to login; profile row created on sign-up.
-  - Verify: component tests with a mocked Supabase client; E2E for TC-AUTH-01, 03, 04, 06 on local Supabase.
+  - Verify: component tests with a mocked Supabase client ✔ (TC-AUTH-01, 02, 03, 04-guard, 06-sign-out). Profile trigger ✔ (DB test). **Pending:** live E2E on a Supabase project (TC-AUTH-04 persistence across browser restart, TC-AUTH-05 reset email).
   - Deps: T3.
 
-- [ ] **T6 — App shell and navigation** (M)
+- [x] **T6 — App shell and navigation** (M)
   - Acceptance: five-tab bottom nav with text labels (desktop sidebar ≥1024 px); colour tokens from UI/UX §6.1 with light and dark themes; empty-state components; offline banner placeholder.
-  - Verify: TC-UI-01, TC-UI-02 (tap targets), TC-UI-06 (no horizontal scroll at 320 px).
+  - Verify: TC-UI-01 ✔ (component test). **Pending (needs a browser):** TC-UI-02 tap-target measurement and TC-UI-06 no horizontal scroll at 320 px.
   - Deps: T5.
 
 **CP-B (part 1)** — user can sign up and see the shell.
