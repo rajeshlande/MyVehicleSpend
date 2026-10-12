@@ -1,3 +1,4 @@
+import { readThrough } from './offlineCache';
 import { getSupabase } from './supabase';
 import { mapDbError } from './errors';
 import type { ReminderInput, ReminderType } from '../core/reminders/schema';
@@ -80,7 +81,7 @@ function toRow(input: ReminderInput) {
 }
 
 /** Live reminders for one vehicle, earliest due date first (undated km reminders last). */
-export async function listReminders(vehicleId: string): Promise<Reminder[]> {
+async function fetchReminders(vehicleId: string): Promise<Reminder[]> {
   const { data, error } = await getSupabase()
     .from('reminders')
     .select(COLUMNS)
@@ -89,6 +90,11 @@ export async function listReminders(vehicleId: string): Promise<Reminder[]> {
     .order('due_date', { ascending: true, nullsFirst: false });
   if (error) throw mapDbError(error);
   return (data as unknown as ReminderRow[]).map(toReminder);
+}
+
+/** Read with the offline cache: live when online, last saved copy when the connection fails (FR-PWA-03). */
+export function listReminders(vehicleId: string): Promise<Reminder[]> {
+  return readThrough(`reminders|${vehicleId}`, () => fetchReminders(vehicleId));
 }
 
 export async function createReminder(input: ReminderInput): Promise<Reminder> {

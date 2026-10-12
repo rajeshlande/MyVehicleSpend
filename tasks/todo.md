@@ -223,10 +223,12 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
   - Deps: T6.
   - Verify notes: built with vite-plugin-pwa 0.20.5, `registerType: 'prompt'`. Icons 192, 512 and maskable 512 (plus apple-touch-icon). Scripted browser check `scripts/pwa-check.mjs` passes 12/12 on the production build: manifest served, icons load (200), service worker registers and controls the page, the app shell renders with the network off (TC-PWA-02), and the offline notice shows. Unit tests cover the update prompt (only after a tap) and the offline notice (5 tests). Caveats: no formal Lighthouse audit run (TC-PWA-01); the update prompt has not been checked against a second deployed version (TC-PWA-06). API responses are deliberately NOT cached by the service worker, so user data does not stay in the cache after sign-out; the offline read cache (T29a) will handle that.
 
-- [ ] **T29a — Offline read cache (Dexie)** (M)
+- [x] **T29a — Offline read cache (Dexie)** (M)
   - Acceptance: FR-PWA-03; last synced data viewable offline with "Last updated" time.
   - Verify: TC-PWA-03.
   - Deps: T28, T24.
+  - Verify notes: Dexie store `snapshots` (`my-vehicle-spend-cache`), keys scoped by user id. Six reads go through `readThrough`: expenses, categories, fuel, loans, loan payments, reminders. Only the `NETWORK` error code falls back to the saved copy; server errors are always shown. The app shell shows "Showing saved data. Last updated DD/MM/YYYY, HH:MM" (IST) when any read is from the cache. Sign-out clears the cache. Tests: offline cache (8), real `listExpenses` online/offline with a stubbed client (2), IST formatting (1), notice (3). Full gate: 431/431 across 62 files; lint, format and typecheck clean.
+  - Caveats: TC-PWA-03 is verified at the data and UI level only. A real dashboard check against live data is blocked on staging credentials. Writes still need a connection until the outbox ships (T29b).
 
 - [ ] **T29b — Outbox and sync engine** (L → keep to one slice)
   - Acceptance: FR-PWA-04, 05; offline inserts stored in `outbox`; replay on `online` and on app open; badge with pending count; retries with back-off, max 5 (NFR-REL-02).

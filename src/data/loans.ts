@@ -1,3 +1,4 @@
+import { readThrough } from './offlineCache';
 import { getSupabase } from './supabase';
 import { mapDbError } from './errors';
 import type { LoanInput } from '../core/loans/schema';
@@ -114,7 +115,7 @@ function toPayment(r: PaymentRow): LoanPayment {
 }
 
 /** Live loans for one vehicle: active first, then closed; newest start date first. */
-export async function listLoans(vehicleId: string): Promise<Loan[]> {
+async function fetchLoans(vehicleId: string): Promise<Loan[]> {
   const { data, error } = await getSupabase()
     .from('loans')
     .select(LOAN_COLUMNS)
@@ -125,8 +126,13 @@ export async function listLoans(vehicleId: string): Promise<Loan[]> {
   return (data as unknown as LoanRow[]).map(toLoan);
 }
 
+/** Read with the offline cache: live when online, last saved copy when the connection fails (FR-PWA-03). */
+export function listLoans(vehicleId: string): Promise<Loan[]> {
+  return readThrough(`loans|${vehicleId}`, () => fetchLoans(vehicleId));
+}
+
 /** Schedule rows for one loan, in instalment order. */
-export async function listLoanPayments(loanId: string): Promise<LoanPayment[]> {
+async function fetchLoanPayments(loanId: string): Promise<LoanPayment[]> {
   const { data, error } = await getSupabase()
     .from('loan_payments')
     .select(PAYMENT_COLUMNS)
@@ -134,6 +140,11 @@ export async function listLoanPayments(loanId: string): Promise<LoanPayment[]> {
     .order('installment_no', { ascending: true });
   if (error) throw mapDbError(error);
   return (data as unknown as PaymentRow[]).map(toPayment);
+}
+
+/** Read with the offline cache: live when online, last saved copy when the connection fails (FR-PWA-03). */
+export function listLoanPayments(loanId: string): Promise<LoanPayment[]> {
+  return readThrough(`loanPayments|${loanId}`, () => fetchLoanPayments(loanId));
 }
 
 /** Stores a loan and its schedule in one call (create_loan, migration 0010). The client id makes retries safe. */

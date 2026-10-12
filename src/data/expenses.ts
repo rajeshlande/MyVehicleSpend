@@ -1,3 +1,4 @@
+import { readThrough } from './offlineCache';
 import { getSupabase } from './supabase';
 import { mapDbError } from './errors';
 import type { ExpenseInput, PaymentMode } from '../core/expenses/schema';
@@ -77,7 +78,7 @@ function toRow(input: ExpenseInput) {
 }
 
 /** Live expenses for one vehicle, newest first. */
-export async function listExpenses(vehicleId: string): Promise<Expense[]> {
+async function fetchExpenses(vehicleId: string): Promise<Expense[]> {
   const { data, error } = await getSupabase()
     .from('expenses')
     .select(SELECT)
@@ -87,6 +88,11 @@ export async function listExpenses(vehicleId: string): Promise<Expense[]> {
     .order('created_at', { ascending: false });
   if (error) throw mapDbError(error);
   return (data as unknown as ExpenseRow[]).map(toExpense);
+}
+
+/** Read with the offline cache: live when online, last saved copy when the connection fails (FR-PWA-03). */
+export function listExpenses(vehicleId: string): Promise<Expense[]> {
+  return readThrough(`expenses|${vehicleId}`, () => fetchExpenses(vehicleId));
 }
 
 /** Creates an expense. The id is generated on the client so offline retries are safe (SDD §7). */
@@ -121,7 +127,7 @@ export async function deleteExpense(id: string): Promise<void> {
 }
 
 /** System categories plus the user's own, in a stable order. */
-export async function listCategories(): Promise<Category[]> {
+async function fetchCategories(): Promise<Category[]> {
   const { data, error } = await getSupabase()
     .from('expense_categories')
     .select('id,group_name,name,sort_order')
@@ -132,6 +138,11 @@ export async function listCategories(): Promise<Category[]> {
     groupName: c.group_name,
     name: c.name,
   }));
+}
+
+/** Read with the offline cache: live when online, last saved copy when the connection fails (FR-PWA-03). */
+export function listCategories(): Promise<Category[]> {
+  return readThrough(`categories`, () => fetchCategories());
 }
 
 /** Replaces the receipt paths on one expense (T14). The bucket is private; paths are not URLs. */

@@ -1,3 +1,4 @@
+import { readThrough } from './offlineCache';
 import { getSupabase } from './supabase';
 import { mapDbError } from './errors';
 import type { FuelInput } from '../core/fuel/schema';
@@ -54,7 +55,7 @@ function toFuelLog(r: FuelRow): FuelLog {
 }
 
 /** Live fuel fills for one vehicle, newest first. */
-export async function listFuelLogs(vehicleId: string): Promise<FuelLog[]> {
+async function fetchFuelLogs(vehicleId: string): Promise<FuelLog[]> {
   const { data, error } = await getSupabase()
     .from('fuel_logs')
     .select(COLUMNS)
@@ -64,6 +65,11 @@ export async function listFuelLogs(vehicleId: string): Promise<FuelLog[]> {
     .order('odometer_km', { ascending: false });
   if (error) throw mapDbError(error);
   return (data as unknown as FuelRow[]).map(toFuelLog);
+}
+
+/** Read with the offline cache: live when online, last saved copy when the connection fails (FR-PWA-03). */
+export function listFuelLogs(vehicleId: string): Promise<FuelLog[]> {
+  return readThrough(`fuel|${vehicleId}`, () => fetchFuelLogs(vehicleId));
 }
 
 /**

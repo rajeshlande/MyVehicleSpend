@@ -1,3 +1,4 @@
+import { LastUpdatedNotice } from '../features/offline/LastUpdatedNotice';
 import type { ReactNode } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { OfflineBanner } from './OfflineBanner';
@@ -28,7 +29,10 @@ export function AppShell({ children }: { children: ReactNode }) {
       </nav>
       <div style={{ flex: 1, minWidth: 0 }}>
         <OfflineBanner />
-        <main className="app-main">{children}</main>
+        <main className="app-main">
+          <LastUpdatedNotice />
+          {children}
+        </main>
       </div>
       <nav className="bottom-nav" aria-label="Primary mobile">
         <NavLink to="/" end>

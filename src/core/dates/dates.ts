@@ -40,3 +40,21 @@ export function isFutureBeyondTomorrow(isoDate: string, today: string): boolean 
   };
   return isoDate > addDay(today);
 }
+
+/** 12/10/2026, 18:04 — date and time in Indian time, for "Last updated" (TC-PWA-03). */
+export function formatDateTimeIST(iso: string): string {
+  const d = new Date(iso);
+  const date = new Intl.DateTimeFormat('en-GB', {
+    timeZone: IST,
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  }).format(d);
+  const time = new Intl.DateTimeFormat('en-GB', {
+    timeZone: IST,
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }).format(d);
+  return `${date}, ${time}`;
+}

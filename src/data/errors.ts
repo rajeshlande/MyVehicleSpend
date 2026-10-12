@@ -1,3 +1,6 @@
+/** Error code for a failed connection, so the offline cache can fall back (FR-PWA-03). */
+export const NETWORK_CODE = 'NETWORK';
+
 /** An error whose message is safe to show to the user (SDD §8, API doc §6). */
 export class DataError extends Error {
   constructor(
@@ -30,7 +33,14 @@ export function mapDbError(err: DbErrorLike): DataError {
       return new DataError("You don't have permission to do that.", err.code);
     default:
       if (msg.includes('fetch') || msg.includes('network'))
-        return new DataError("Couldn't reach the server. Check your connection and try again.");
+        return new DataError(
+          "Couldn't reach the server. Check your connection and try again.",
+          NETWORK_CODE
+        );
       return new DataError('Something went wrong. Please try again.', err.code);
   }
+}
+
+export function isNetworkError(e: unknown): boolean {
+  return e instanceof DataError && e.code === NETWORK_CODE;
 }

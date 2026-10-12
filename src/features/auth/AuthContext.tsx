@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import { getSupabase } from '../../data/supabase';
+import { clearOfflineCache } from '../../data/offlineCache';
 import { signInSchema, signUpSchema, type SignInInput, type SignUpInput } from './schemas';
 
 export interface AuthState {
@@ -74,6 +75,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { error: null, needsConfirmation: data.session === null };
       },
       signOut: async () => {
+        // Saved data belongs to this account only, so it goes when the account signs out (FR-PWA-03).
+        await clearOfflineCache();
         await getSupabase().auth.signOut();
       },
     }),
