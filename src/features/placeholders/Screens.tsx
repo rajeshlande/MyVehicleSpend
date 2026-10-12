@@ -74,6 +74,9 @@ export function MorePage() {
         <li>
           <Link to="/reports">Reports</Link>
         </li>
+        <li>
+          <Link to="/backup">Backup and restore</Link>
+        </li>
         <li>Settings (coming in Phase 8)</li>
       </ul>
       <button type="button" className="btn-secondary" onClick={() => void signOut()}>

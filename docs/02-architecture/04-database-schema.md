@@ -474,7 +474,7 @@ Seed script: `supabase/seed.sql` (insert rows with `user_id = null`).
 - FY derived from `expense_date`; no FY column stored.
 - GST stored as a component, not a separate rate, because bills show the total with GST included.
 
-## 11. Implementation Notes (v1.0 build, migrations 0001–0012)
+## 11. Implementation Notes (v1.0 build, migrations 0001–0013)
 
 Changes made while turning this design into migrations. Each was verified by `tests/db/`:
 
@@ -491,3 +491,11 @@ Changes made while turning this design into migrations. Each was verified by `te
 **Known limitation of `v_fuel_efficiency`:** it uses the litres of the current fill only. It therefore does not match TC-FUEL-02 when partial fills sit between full tanks. The app's mileage algorithm (SDD §5.6, task T15) is the source of truth for displayed km/l. The view is for simple reporting only.
 
 **Test database:** tests run against PGlite (PostgreSQL 17 in-process) with a shim for the Supabase-only parts (`anon`/`authenticated` roles, `auth.users`, `auth.uid()`). This does not replace running the migrations on a real Supabase project in staging.
+
+### 11.x Backup and restore (migration 0013, T26)
+
+- `restore_backup(p_payload jsonb)` restores a JSON backup (format `my-vehicle-spend-backup`, `schemaVersion` 1) into an account with no rows at all.
+- IDs come from the file. `user_id` is always the signed-in user.
+- The whole restore is one transaction. A bad row, or an ID that already exists, rolls everything back.
+- Exports include soft-deleted rows so that foreign keys in the file stay valid.
+
