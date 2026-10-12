@@ -217,10 +217,11 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
   - Verify notes (so far): logic tested (13 tests): no/forged/expired token refused; typed DELETE required; user id from the token only; receipts removed before the auth user; storage failure keeps the account for retry. Cascade tested on real Postgres (PGlite): deleting the auth user empties every user table and leaves other users and system categories. UI tested (6 tests). NOT yet done: deploy the function, set the service role secret, and check on a live project that the receipts are removed and sign-in fails afterwards. Deno type check not run (no Deno in sandbox).
   - Deps: T14, T5.
 
-- [ ] **T28 — PWA shell: manifest, icons, service worker** (M)
+- [x] **T28 — PWA shell: manifest, icons, service worker** (M)
   - Acceptance: FR-PWA-01, 02, 06; manifest with 192, 512 and maskable icons; `registerType: 'prompt'`; app shell precached; update banner.
   - Verify: TC-PWA-01 (Lighthouse PWA), TC-PWA-02 (airplane mode reload), TC-PWA-06.
   - Deps: T6.
+  - Verify notes: built with vite-plugin-pwa 0.20.5, `registerType: 'prompt'`. Icons 192, 512 and maskable 512 (plus apple-touch-icon). Scripted browser check `scripts/pwa-check.mjs` passes 12/12 on the production build: manifest served, icons load (200), service worker registers and controls the page, the app shell renders with the network off (TC-PWA-02), and the offline notice shows. Unit tests cover the update prompt (only after a tap) and the offline notice (5 tests). Caveats: no formal Lighthouse audit run (TC-PWA-01); the update prompt has not been checked against a second deployed version (TC-PWA-06). API responses are deliberately NOT cached by the service worker, so user data does not stay in the cache after sign-out; the offline read cache (T29a) will handle that.
 
 - [ ] **T29a — Offline read cache (Dexie)** (M)
   - Acceptance: FR-PWA-03; last synced data viewable offline with "Last updated" time.

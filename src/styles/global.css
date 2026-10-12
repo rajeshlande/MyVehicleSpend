@@ -489,3 +489,20 @@ select {
   align-items: center;
   margin: 0.5rem 0;
 }
+
+/* PWA banners (FR-PWA-06, TC-PWA-02) */
+.pwa-banner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0.75rem;
+  background: #eef6f2;
+  border-bottom: 1px solid #b9dccb;
+  font-size: 0.9rem;
+}
+.pwa-offline {
+  background: #fff4e5;
+  border-bottom-color: #f0c98a;
+}
