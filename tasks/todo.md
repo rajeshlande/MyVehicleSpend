@@ -155,15 +155,17 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
   - Decisions: simulations are not saved (no `loan_events` writes yet). Accrued interest is a simple actual/365 estimate; the lender's figure governs. Flat-rate loans use their equivalent reducing rate. The charge defaults to 0%, so the user enters it from their agreement.
   - Deps: T17, T18.
 
-**CP-C (part 1)** — loan maths verified and loan flows usable.
+**CP-C (part 1)** — loan maths verified and loan flows usable. **PASSED with caveats (2026-10-12):** unit, DB and UI tests green; live checks pending staging credentials.
 
 ---
 
 ## Phase 6 — Reminders
 
-- [ ] **T21 — Reminders CRUD and due logic** (M)
+- [x] **T21 — Reminders CRUD and due logic** (M)
   - Acceptance: FR-REM-01, 02, 05; types incl. service by km; "due soon" window = due date − lead days; overdue badge; insurance fields stored.
-  - Verify: TC-REM-01, TC-REM-02, TC-REM-04.
+  - Verify: `src/core/reminders/due.test.ts` (12 tests: TC-REM-01 due soon from 17/11/2026, TC-REM-02 overdue, TC-REM-04 200 km to service, km and date rules, Home window). `src/core/reminders/schema.test.ts` (19 tests). `tests/db/reminders.test.ts` (5 tests: insurance fields stored, trigger rule, lead range, RLS). `src/features/reminders/reminders.test.tsx` (6 UI tests, including Home panel). Browser layout checks pass (20/20), but the signed-in routes render the setup screen in this build, so they do not cover these screens. **Pending:** TC-REM-01, 02, 04 on a live project.
+  - Built: `src/core/reminders/due.ts`, `schema.ts`, `src/data/reminders.ts`, `/reminders` page, Home panel, More link.
+  - Decisions: km reminders are due soon within 500 km of the due reading (the spec gives no threshold; chosen here, easy to change via `KM_LEAD`). Reminders use direct table writes with soft delete; no migration was needed.
   - Deps: T8.
 
 - [ ] **T22 — Mark done creates expense** (S)

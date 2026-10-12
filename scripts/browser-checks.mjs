@@ -25,7 +25,7 @@ const session = {
 };
 
 const SIGNED_OUT = ['/login', '/signup'];
-const SIGNED_IN = ['/', '/expenses', '/add', '/more', '/vehicles', '/fuel'];
+const SIGNED_IN = ['/', '/expenses', '/add', '/more', '/vehicles', '/fuel', '/loans', '/reminders'];
 const VIEWPORTS = [
   { name: '320px', width: 320, height: 640 },
   { name: 'desktop', width: 1280, height: 800 },
