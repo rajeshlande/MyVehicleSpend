@@ -1,4 +1,4 @@
-import { HomeReminders } from '../reminders/HomeReminders';
+import { Dashboard } from '../dashboard/Dashboard';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { useSignOut } from '../../components/AppShell';
@@ -48,10 +48,7 @@ export function HomePage() {
         </div>
         <Link to="/vehicles">Manage vehicles</Link>
       </section>
-      <HomeReminders vehicle={activeVehicle} />
-      <EmptyState title="No expenses yet">
-        <p>Logging expenses and fuel arrives in Phases 3 and 4.</p>
-      </EmptyState>
+      <Dashboard vehicle={activeVehicle} />
     </>
   );
 }

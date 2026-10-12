@@ -187,10 +187,11 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
 
 ## Phase 7 — Dashboard & Reports
 
-- [ ] **T24 — Dashboard** (M)
+- [x] **T24 — Dashboard** (M)
   - Acceptance: FR-RPT-01 and 02 — monthly total, category donut, monthly bar trend, cost/km, cost/month, due-soon list, loan outstanding; presets (this month, last month, this FY, last 12 months, custom); empty state with no NaN.
   - Verify: TC-RPT-01 (totals to the paisa against fixtures), TC-RPT-04.
   - Deps: T15, T20, T22.
+  - Verify notes: TC-RPT-01 covered by core and UI tests (paise-exact totals, month filter, last-month switch). TC-RPT-04 covered (empty state, no NaN). Presets and custom range covered. Loan outstanding uses paid instalments only. Dashboard lives on Home (`/`). Cost per month divides by months elapsed so far in the period. Cost per km uses the odometer span of the period's fuel fills and expense rows. The donut uses category groups. Full gate green: 343 tests across 46 files, lint, typecheck, Prettier, build. Live Supabase data not yet checked (blocked on staging credentials).
 
 - [ ] **T25 — Reports and CSV export** (M)
   - Acceptance: FR-RPT-03, 04, 05; Indian FY 1 Apr to 31 Mar; monthly category table; CSV with UTF-8 BOM for expenses, fuel and loan schedule.
