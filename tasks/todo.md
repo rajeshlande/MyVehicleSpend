@@ -211,9 +211,10 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
   - Deps: T25.
   - Verify notes: TC-DATA-02 checked on real Postgres (PGlite): row counts match, IDs kept, user_id set to the signed-in user, another user's data untouched, non-empty account refused, newer schema refused, an unsigned caller refused, bad row rolls back everything, clash of an existing ID refused with a clear message. TC-DATA-01: file format and download checked in UI tests; the live export against Supabase is NOT yet checked (open caveat). Design decision: IDs are preserved, so a restore is refused while the original rows still exist in the same project. Full gate green: 390 tests across 53 files, lint, typecheck, Prettier, build.
 
-- [ ] **T27 — Account deletion Edge Function** (M)
+- [ ] **T27 — Account deletion Edge Function** (M) — built and tested; live check pending
   - Acceptance: FR-DATA-03; `delete-account` verifies JWT, deletes `receipts/{uid}/` objects, deletes auth user (cascade); typed `DELETE` confirmation; service role key set via `supabase secrets` only.
   - Verify: TC-DATA-03; sign-in fails after deletion.
+  - Verify notes (so far): logic tested (13 tests): no/forged/expired token refused; typed DELETE required; user id from the token only; receipts removed before the auth user; storage failure keeps the account for retry. Cascade tested on real Postgres (PGlite): deleting the auth user empties every user table and leaves other users and system categories. UI tested (6 tests). NOT yet done: deploy the function, set the service role secret, and check on a live project that the receipts are removed and sign-in fails afterwards. Deno type check not run (no Deno in sandbox).
   - Deps: T14, T5.
 
 - [ ] **T28 — PWA shell: manifest, icons, service worker** (M)
