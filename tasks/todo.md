@@ -135,9 +135,10 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
   - Verify: TC-LOAN-01 ✔ (₹16,703.92, cross-checked with an independent PMT calculation), TC-LOAN-02 ✔, TC-LOAN-03 ✔, TC-LOAN-04 ✔ (₹17,222.22; effective rate ≈ 14.5% nominal, computed), TC-LOAN-07 ✔ (38 months), TC-LOAN-08 ✔ (₹14,113.58), TC-LOAN-09 ✔ (engine), TC-LOAN-10 ✔ (engine). `src/core/loans/emi.test.ts`, 17 tests. **Decision recorded:** SDD §5.4 zero-denominator case is now `null` (EMI does not cover interest), not 'fully repaid'.
   - Deps: T1.
 
-- [ ] **T18 — Loan CRUD and schedule view** (M)
+- [x] **T18 — Loan CRUD and schedule view** (M)
   - Acceptance: FR-LOAN-01, 03, 11; loan form with computed EMI (user may override); schedule rows inserted in bulk into `loan_payments`; close loan.
-  - Verify: TC-LOAN-11 (E2E) plus a row-count check (60 rows).
+  - Verify: `tests/db/loans.test.ts` (8 tests: 60 rows and sums in one call, idempotent retry, bad schedule rejected with no partial write, cross-user isolation, close keeps schedule). `src/core/loans` (plan, schema, EMI, date clamping). `src/features/loans/loans.test.tsx` (8 UI tests: computed EMI, save with 60 rows, entered EMI, Active/Closed filter, schedule, close loan). **Pending:** TC-LOAN-11 end to end on a live project (blocked on staging credentials).
+  - Built: migration `0010_loans.sql` (`create_loan`), `src/data/loans.ts`, `/loans` and `/loans/:loanId`.
   - Deps: T17, T8.
 
 - [ ] **T19 — Record EMI payment** (M)

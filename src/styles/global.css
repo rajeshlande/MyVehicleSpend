@@ -322,3 +322,42 @@ select {
   background: var(--bg);
   color: var(--text);
 }
+
+/* Loans (T18): schedule table, filter tabs, screen-reader-only caption. */
+.table-scroll {
+  overflow-x: auto;
+}
+.table-scroll table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.table-scroll th,
+.table-scroll td {
+  padding: 0.4rem 0.5rem;
+  text-align: right;
+  border-bottom: 1px solid var(--border, #e2e2e2);
+  white-space: nowrap;
+}
+.table-scroll th:nth-child(2),
+.table-scroll td:nth-child(2),
+.table-scroll td:nth-child(7) {
+  text-align: left;
+}
+.filter-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0.75rem 0;
+}
+.filter-tabs button[aria-pressed='true'] {
+  font-weight: 700;
+  text-decoration: underline;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

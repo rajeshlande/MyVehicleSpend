@@ -54,17 +54,6 @@ export function HomePage() {
   );
 }
 
-export function LoansPage() {
-  return (
-    <>
-      <h1>Loans</h1>
-      <EmptyState title="No loans yet">
-        <p>Add a vehicle loan to see its EMI schedule.</p>
-      </EmptyState>
-    </>
-  );
-}
-
 export function MorePage() {
   const signOut = useSignOut();
   return (
@@ -76,6 +65,9 @@ export function MorePage() {
         </li>
         <li>
           <Link to="/fuel">Fuel log</Link>
+        </li>
+        <li>
+          <Link to="/loans">Loans</Link>
         </li>
         <li>Reports (coming in Phase 7)</li>
         <li>Settings (coming in Phase 8)</li>

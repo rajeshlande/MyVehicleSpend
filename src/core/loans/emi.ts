@@ -29,9 +29,15 @@ export function emi({ principal, annualRatePct, months }: EmiInput): number {
   return round2((principal * r * g) / (g - 1));
 }
 
-/** Month-by-month schedule (SDD §5.2). The last row clears any rounding residue. */
-export function buildSchedule(input: EmiInput): { emi: number; rows: ScheduleRow[] } {
-  const instalment = emi(input);
+/**
+ * Month-by-month schedule (SDD §5.2). The last row clears any rounding residue.
+ * `emiOverride` uses an EMI the user entered instead of the computed one (FR-LOAN-01).
+ */
+export function buildSchedule(
+  input: EmiInput,
+  emiOverride?: number
+): { emi: number; rows: ScheduleRow[] } {
+  const instalment = emiOverride ?? emi(input);
   const r = monthly(input.annualRatePct);
   const emiP = toPaise(instalment);
   let balanceP = toPaise(input.principal);
