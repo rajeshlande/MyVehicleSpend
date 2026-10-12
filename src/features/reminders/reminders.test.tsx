@@ -13,15 +13,21 @@ const api = vi.hoisted(() => ({
   deleteReminder: vi.fn(),
   listFuelLogs: vi.fn(),
   listExpenses: vi.fn(),
+  listCategories: vi.fn(),
+  markReminderDone: vi.fn(),
 }));
 vi.mock('../../data/reminders', () => ({
   listReminders: api.listReminders,
   createReminder: api.createReminder,
   updateReminder: api.updateReminder,
   deleteReminder: api.deleteReminder,
+  markReminderDone: api.markReminderDone,
 }));
 vi.mock('../../data/fuel', () => ({ listFuelLogs: api.listFuelLogs }));
-vi.mock('../../data/expenses', () => ({ listExpenses: api.listExpenses }));
+vi.mock('../../data/expenses', () => ({
+  listExpenses: api.listExpenses,
+  listCategories: api.listCategories,
+}));
 
 const vehicleState = vi.hoisted(() => ({
   value: {
@@ -71,6 +77,7 @@ beforeEach(() => {
   };
   api.listFuelLogs.mockResolvedValue([]);
   api.listExpenses.mockResolvedValue([{ odometerKm: 51800 }]);
+  api.listCategories.mockResolvedValue([]);
 });
 
 function renderPage(ui: ReactElement = <RemindersPage />) {

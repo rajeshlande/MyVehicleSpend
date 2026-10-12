@@ -168,9 +168,11 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
   - Decisions: km reminders are due soon within 500 km of the due reading (the spec gives no threshold; chosen here, easy to change via `KM_LEAD`). Reminders use direct table writes with soft delete; no migration was needed.
   - Deps: T8.
 
-- [ ] **T22 — Mark done creates expense** (S)
+- [x] **T22 — Mark done creates expense** (S)
   - Acceptance: FR-REM-03; `is_done`, `done_on`; optional expense created under the matching category.
-  - Verify: TC-REM-03.
+  - Verify: TC-REM-03 at the database level (`tests/db/reminder_done.test.ts`: 6 tests covering ₹100 under PUC certificate dated today, no expense when none is recorded, already-done refused, cross-user refused, rollback on failure, category and amount required). `src/core/reminders/done.test.ts` (8 tests). `src/features/reminders/markDone.test.tsx` (4 UI tests). **Pending:** TC-REM-03 end to end on a live project.
+  - Built: migration `0012_reminder_done.sql` (`mark_reminder_done`), `markReminderDone` in `src/data/reminders.ts`, `MarkDoneForm`.
+  - Decisions: the category defaults from the reminder type (insurance → Insurance renewal fee, service → Periodic service, loan EMI → EMI payment). The user can change it. Recording an expense is off by default. The expense takes source `reminder`. Marking done twice is refused, and there is no undo yet.
   - Deps: T21, T11.
 
 - [ ] **T23 — Browser notification opt-in (Should)** (S)

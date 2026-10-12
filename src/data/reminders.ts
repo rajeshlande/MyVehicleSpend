@@ -120,3 +120,32 @@ export async function deleteReminder(id: string): Promise<void> {
     .eq('id', id);
   if (error) throw mapDbError(error);
 }
+
+/**
+ * Marks a reminder done, and records its expense when `recordExpense` is set (mark_reminder_done, migration 0012).
+ * Both happen in one call, so a failure leaves neither half-saved.
+ */
+export async function markReminderDone(
+  id: string,
+  input: {
+    doneOn: string;
+    recordExpense: boolean;
+    amount?: number;
+    categoryId?: string;
+    paymentMode?: string;
+    vendor?: string;
+    notes?: string;
+  }
+): Promise<Reminder> {
+  const { data, error } = await getSupabase().rpc('mark_reminder_done', {
+    p_reminder_id: id,
+    p_done_on: input.doneOn,
+    p_expense_category_id: input.recordExpense ? (input.categoryId ?? null) : null,
+    p_amount: input.recordExpense ? (input.amount ?? null) : null,
+    p_payment_mode: input.recordExpense ? (input.paymentMode ?? null) : null,
+    p_vendor: input.recordExpense && input.vendor?.trim() ? input.vendor.trim() : null,
+    p_notes: input.recordExpense && input.notes?.trim() ? input.notes.trim() : null,
+  });
+  if (error) throw mapDbError(error);
+  return toReminder(data as unknown as ReminderRow);
+}

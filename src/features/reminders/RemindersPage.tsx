@@ -1,11 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useVehicles } from '../vehicles/VehicleContext';
 import {
   createReminder,
   deleteReminder,
+  markReminderDone,
   updateReminder,
   type Reminder,
 } from '../../data/reminders';
+import { listCategories, type Category } from '../../data/expenses';
+import { MarkDoneForm } from './MarkDoneForm';
 import { formatDMY } from '../../core/dates/dates';
 import { formatINR } from '../../core/money/money';
 import type { ReminderInput } from '../../core/reminders/schema';
@@ -27,8 +30,14 @@ export function RemindersPage() {
   const { activeVehicle, vehicles } = useVehicles();
   const { items, error, reload } = useReminders(activeVehicle);
   const [mode, setMode] = useState<
-    { kind: 'list' } | { kind: 'add' } | { kind: 'edit'; id: string }
+    { kind: 'list' } | { kind: 'add' } | { kind: 'edit'; id: string } | { kind: 'done'; id: string }
   >({ kind: 'list' });
+  const [categories, setCategories] = useState<Category[]>([]);
+  useEffect(() => {
+    listCategories()
+      .then(setCategories)
+      .catch(() => setCategories([]));
+  }, []);
   const [notice, setNotice] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
 
@@ -58,6 +67,25 @@ export function RemindersPage() {
       await reload();
     } catch (e) {
       setActionError(e instanceof Error ? e.message : 'Could not delete the reminder.');
+    }
+  }
+
+  if (mode.kind === 'done') {
+    const target = items?.find((r) => r.id === mode.id);
+    if (target) {
+      return (
+        <MarkDoneForm
+          reminder={target}
+          categories={categories}
+          onSubmit={(input) => markReminderDone(target.id, input)}
+          onSaved={() => {
+            setNotice(`“${target.title}” marked done.`);
+            setMode({ kind: 'list' });
+            void reload();
+          }}
+          onCancel={() => setMode({ kind: 'list' })}
+        />
+      );
     }
   }
 
@@ -121,6 +149,7 @@ export function RemindersPage() {
                     r={r}
                     onEdit={() => setMode({ kind: 'edit', id: r.id })}
                     onDelete={() => void remove(r)}
+                    onMarkDone={() => setMode({ kind: 'done', id: r.id })}
                   />
                 ))}
               </ul>
@@ -136,10 +165,12 @@ function ReminderItem({
   r,
   onEdit,
   onDelete,
+  onMarkDone,
 }: {
   r: ReminderView;
   onEdit: () => void;
   onDelete: () => void;
+  onMarkDone: () => void;
 }) {
   const badge = STATUS_BADGE[r.state.status];
   return (
@@ -163,6 +194,11 @@ function ReminderItem({
         </div>
       )}
       <div className="form-actions">
+        {r.state.status !== 'done' && (
+          <button type="button" className="btn-primary" onClick={onMarkDone}>
+            Mark done {r.title}
+          </button>
+        )}
         <button type="button" className="btn-secondary" onClick={onEdit}>
           Edit {r.title}
         </button>

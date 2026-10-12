@@ -474,7 +474,7 @@ Seed script: `supabase/seed.sql` (insert rows with `user_id = null`).
 - FY derived from `expense_date`; no FY column stored.
 - GST stored as a component, not a separate rate, because bills show the total with GST included.
 
-## 11. Implementation Notes (v1.0 build, migrations 0001–0011)
+## 11. Implementation Notes (v1.0 build, migrations 0001–0012)
 
 Changes made while turning this design into migrations. Each was verified by `tests/db/`:
 
