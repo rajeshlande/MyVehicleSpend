@@ -231,6 +231,8 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
   - Caveats: TC-PWA-03 is verified at the data and UI level only. A real dashboard check against live data is blocked on staging credentials. Writes still need a connection until the outbox ships (T29b).
 
 - [ ] **T29b — Outbox and sync engine** (L → keep to one slice)
+  - Slice 1 done (engine and store only): `src/data/outbox.ts` (Dexie `my-vehicle-spend-outbox`, keyed by client UUID, per user). Replays oldest first. Stops at the first item still backing off. Back-off 10/20/40/80 s. Gives up after 5 network attempts. Server rejections are kept as failed and not retried. Tests: 9 in `src/data/outbox.test.ts`. Full gate 440/440 across 63 files.
+  - Still open for T29b: write paths (expense and fuel create) queue when offline; replay on `online` and on app open; pending badge UI; TC-PWA-04 check. Open decision: sign-out with items still pending. Current behaviour: the outbox is not cleared, so this data is kept for the same account only. Needs an owner decision before the badge ships.
   - Acceptance: FR-PWA-04, 05; offline inserts stored in `outbox`; replay on `online` and on app open; badge with pending count; retries with back-off, max 5 (NFR-REL-02).
   - Verify: TC-PWA-04 (expense and fuel rows appear in Supabase, no duplicates).
   - Deps: T29a, T16a.
