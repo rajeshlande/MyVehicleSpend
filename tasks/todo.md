@@ -148,9 +148,11 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
   - Decisions: "Late" is derived from the due date, not stored, so no background job is needed. Payments can be recorded in any order; the summary uses the principal of paid rows. Late fee and bounce are rolled into the one expense; the separate "Late payment" line is not split out (TC-LOAN-05 allows either).
   - Deps: T18, T16a pattern.
 
-- [ ] **T20 — Prepayment and foreclosure simulators (pure + UI)** (M)
+- [x] **T20 — Prepayment and foreclosure simulators (pure + UI)** (M)
   - Acceptance: reduce-tenure and reduce-EMI formulas (SDD §5.4, §5.5); foreclosure estimate with charge %; loan summary (outstanding, interest paid, interest remaining, months remaining) (FR-LOAN-06, 07, 08).
-  - Verify: TC-LOAN-07, 08, 09, 10.
+  - Verify: `src/core/loans/simulate.test.ts` (11 tests: TC-LOAN-07 reduce tenure to 38 months with EMI unchanged, TC-LOAN-08 reduce EMI to ₹14,113.58 over 46 months, cleared-loan and zero-rate edge cases, accrued-interest and foreclosure totals, TC-LOAN-09). `src/features/loans/simulators.test.tsx` (5 UI tests). TC-LOAN-10 summary was covered in T17/T18. **Pending:** end-to-end on a live project (blocked on staging credentials).
+  - Built: `src/core/loans/simulate.ts`, `src/features/loans/LoanSimulators.tsx`, shown on active loans in `LoanDetailPage`.
+  - Decisions: simulations are not saved (no `loan_events` writes yet). Accrued interest is a simple actual/365 estimate; the lender's figure governs. Flat-rate loans use their equivalent reducing rate. The charge defaults to 0%, so the user enters it from their agreement.
   - Deps: T17, T18.
 
 **CP-C (part 1)** — loan maths verified and loan flows usable.

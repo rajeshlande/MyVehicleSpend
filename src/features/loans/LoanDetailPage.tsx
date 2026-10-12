@@ -21,6 +21,8 @@ import {
   type DisplayStatus,
 } from '../../core/loans/payment';
 import { EmptyState } from '../placeholders/Screens';
+import { LoanSimulators } from './LoanSimulators';
+import { flatRateEffectiveRate } from '../../core/loans/emi';
 
 const STATUS_LABEL: Record<DisplayStatus, string> = {
   paid: 'Paid',
@@ -80,6 +82,8 @@ export function LoanDetailPage() {
   }, [loanId]);
 
   const today = todayIST();
+  // Interest accrues from the last paid instalment's due date (rows are in instalment order).
+  const lastPaidDue = [...rows].reverse().find((r) => r.status === 'paid')?.dueDate;
 
   // Summary from the rows marked paid, correct whatever order payments were made in (FR-LOAN-08).
   const summary = useMemo(() => {
@@ -204,6 +208,24 @@ export function LoanDetailPage() {
           <p>Interest remaining {formatINR(summary.interestRemaining)}</p>
           <p>Months remaining {summary.monthsRemaining}</p>
         </section>
+      )}
+
+      {summary && current.status === 'active' && summary.monthsRemaining > 0 && (
+        <LoanSimulators
+          outstanding={summary.outstanding}
+          emi={current.emiAmount}
+          annualRatePct={
+            current.interestMethod === 'flat'
+              ? flatRateEffectiveRate({
+                  principal: current.principal,
+                  emi: current.emiAmount,
+                  months: current.tenureMonths,
+                }).annualNominalPct
+              : current.annualRate
+          }
+          remainingMonths={summary.monthsRemaining}
+          accrualFrom={lastPaidDue ?? current.startDate}
+        />
       )}
 
       {notice && (
