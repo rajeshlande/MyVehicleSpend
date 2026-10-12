@@ -141,9 +141,11 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
   - Built: migration `0010_loans.sql` (`create_loan`), `src/data/loans.ts`, `/loans` and `/loans/:loanId`.
   - Deps: T17, T8.
 
-- [ ] **T19 — Record EMI payment** (M)
+- [x] **T19 — Record EMI payment** (M)
   - Acceptance: `record_loan_payment` RPC; status paid/late (FR-LOAN-05); creates expense under Loan & Finance with late fee and bounce included; interest stored separately (FR-LOAN-09).
-  - Verify: TC-LOAN-05, TC-LOAN-06.
+  - Verify: `tests/db/loan_payments.test.ts` (7 DB tests: TC-LOAN-05 expense ₹16,903.92 under EMI payment, bounce included, interest kept on the schedule row, no double-recording, cross-user refused, rollback on failure, future date refused). `src/core/loans/payment.test.ts` (12 tests: totals, TC-LOAN-06 Late derived from due date, summary correct in any payment order). `src/features/loans/loans.test.tsx` (11 UI tests). **Pending:** TC-LOAN-05 and TC-LOAN-06 end to end on a live project (blocked on staging credentials).
+  - Built: migration `0011_loan_payments.sql` (`record_loan_payment`), `recordLoanPayment` in `src/data/loans.ts`, record form in `LoanDetailPage`.
+  - Decisions: "Late" is derived from the due date, not stored, so no background job is needed. Payments can be recorded in any order; the summary uses the principal of paid rows. Late fee and bounce are rolled into the one expense; the separate "Late payment" line is not split out (TC-LOAN-05 allows either).
   - Deps: T18, T16a pattern.
 
 - [ ] **T20 — Prepayment and foreclosure simulators (pure + UI)** (M)

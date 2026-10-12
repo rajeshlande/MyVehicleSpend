@@ -11,8 +11,11 @@ const api = vi.hoisted(() => ({
   getLoan: vi.fn(),
   listLoanPayments: vi.fn(),
   closeLoan: vi.fn(),
+  recordLoanPayment: vi.fn(),
+  listCategories: vi.fn(),
 }));
 vi.mock('../../data/loans', () => api);
+vi.mock('../../data/expenses', () => ({ listCategories: api.listCategories }));
 
 const vehicleState = vi.hoisted(() => ({
   value: {
@@ -188,6 +191,10 @@ describe('LoanDetailPage — schedule, summary, close (TC-LOAN-02, TC-LOAN-10, T
   beforeEach(() => {
     api.getLoan.mockResolvedValue(loan({}));
     api.listLoanPayments.mockResolvedValue(payments());
+    api.listCategories.mockResolvedValue([
+      { id: 'cat-emi', groupName: 'Loan & Finance', name: 'EMI payment' },
+      { id: 'cat-late', groupName: 'Loan & Finance', name: 'Late payment' },
+    ]);
   });
 
   it('shows 60 schedule rows, the closing balance of zero, and the summary', async () => {
@@ -208,5 +215,70 @@ describe('LoanDetailPage — schedule, summary, close (TC-LOAN-02, TC-LOAN-10, T
     await waitFor(() => expect(api.closeLoan).toHaveBeenCalledWith(LOAN_ID, expect.any(String)));
     expect(await screen.findByText(/Closed on/)).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Mark loan closed' })).not.toBeInTheDocument();
+  });
+});
+
+describe('LoanDetailPage — record an EMI payment (FR-LOAN-05, TC-LOAN-05, TC-LOAN-06)', () => {
+  beforeEach(() => {
+    api.getLoan.mockResolvedValue(loan({}));
+    api.listCategories.mockResolvedValue([
+      { id: 'cat-emi', groupName: 'Loan & Finance', name: 'EMI payment' },
+    ]);
+  });
+
+  it('shows Late for an unpaid instalment whose due date has passed, and Pending for later ones', async () => {
+    const rows = payments();
+    rows[0] = { ...rows[0]!, dueDate: '2026-10-05' };
+    api.listLoanPayments.mockResolvedValue(rows);
+    renderLoans(`/loans/${LOAN_ID}`);
+    const table = await screen.findByRole('table', { name: 'Repayment schedule' });
+    const first = within(table).getAllByRole('row')[1]!;
+    expect(first).toHaveTextContent('Late');
+    const second = within(table).getAllByRole('row')[2]!;
+    expect(second).toHaveTextContent('Pending');
+  });
+
+  it('records installment 14 with a ₹200 late fee and marks it Paid (TC-LOAN-05)', async () => {
+    const rows = payments();
+    api.listLoanPayments.mockResolvedValue(rows);
+    api.recordLoanPayment.mockImplementation(async (id: string) => ({
+      ...rows[13]!,
+      id,
+      status: 'paid',
+      paidOn: '2026-10-12',
+      paidAmount: 16903.92,
+      lateFee: 200,
+    }));
+    const user = userEvent.setup();
+    renderLoans(`/loans/${LOAN_ID}`);
+    await user.click(
+      await screen.findByRole('button', { name: 'Record payment for instalment 14' })
+    );
+    await user.clear(screen.getByLabelText('Late fee (₹)'));
+    await user.type(screen.getByLabelText('Late fee (₹)'), '200');
+    await user.click(screen.getByRole('button', { name: 'Save payment' }));
+
+    await waitFor(() => expect(api.recordLoanPayment).toHaveBeenCalledTimes(1));
+    const [paymentId, categoryId, input] = api.recordLoanPayment.mock.calls[0]!;
+    expect(paymentId).toBe('p14');
+    expect(categoryId).toBe('cat-emi');
+    expect(input).toMatchObject({ lateFee: 200, bounceCharge: 0 });
+    const table = screen.getByRole('table', { name: 'Repayment schedule' });
+    expect(within(table).getAllByRole('row')[14]).toHaveTextContent('Paid');
+    expect(within(table).getAllByRole('row')[14]).not.toHaveTextContent('Record payment');
+  });
+
+  it('does not offer to record a payment on an instalment that is already paid', async () => {
+    const rows = payments();
+    rows[0] = { ...rows[0]!, status: 'paid', paidOn: '2026-11-05', paidAmount: 16703.92 };
+    api.listLoanPayments.mockResolvedValue(rows);
+    renderLoans(`/loans/${LOAN_ID}`);
+    await screen.findByRole('table', { name: 'Repayment schedule' });
+    expect(
+      screen.queryByRole('button', { name: 'Record payment for instalment 1' })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Record payment for instalment 2' })
+    ).toBeInTheDocument();
   });
 });

@@ -189,3 +189,28 @@ export async function getLoan(loanId: string): Promise<Loan | null> {
   if (error) throw mapDbError(error);
   return data ? toLoan(data as unknown as LoanRow) : null;
 }
+
+/** Records one EMI payment and its expense in one call (record_loan_payment, migration 0011). */
+export async function recordLoanPayment(
+  paymentId: string,
+  categoryId: string,
+  input: {
+    paidOn: string;
+    lateFee: number;
+    bounceCharge: number;
+    paymentMode?: string;
+    notes?: string;
+  }
+): Promise<LoanPayment> {
+  const { data, error } = await getSupabase().rpc('record_loan_payment', {
+    p_payment_id: paymentId,
+    p_category_id: categoryId,
+    p_paid_on: input.paidOn,
+    p_late_fee: input.lateFee,
+    p_bounce_charge: input.bounceCharge,
+    p_payment_mode: input.paymentMode ?? null,
+    p_notes: input.notes?.trim() ? input.notes.trim() : null,
+  });
+  if (error) throw mapDbError(error);
+  return toPayment(data as unknown as PaymentRow);
+}
