@@ -175,10 +175,11 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
   - Decisions: the category defaults from the reminder type (insurance → Insurance renewal fee, service → Periodic service, loan EMI → EMI payment). The user can change it. Recording an expense is off by default. The expense takes source `reminder`. Marking done twice is refused, and there is no undo yet.
   - Deps: T21, T11.
 
-- [ ] **T23 — Browser notification opt-in (Should)** (S)
+- [x] **T23 — Browser notification opt-in (Should)** (S)
   - Acceptance: FR-REM-04; permission asked only after user taps _Turn on reminders_; refusal does not break the app.
   - Verify: TC-REM-05.
   - Deps: T22.
+  - Verify notes: 316/316 tests (TC-REM-05 UI: no prompt on load; prompt only on tap; refusal leaves list usable; unsupported message; in-app notice once per day). Lint, typecheck, Prettier, build green. Permission is requested only from the tap handler. Notifications show only while the app is open; installed-app notifications need a service worker (not built, out of scope).
 
 **CP-C (part 2)** — loans and reminders complete.
 

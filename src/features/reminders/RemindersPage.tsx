@@ -9,7 +9,7 @@ import {
 } from '../../data/reminders';
 import { listCategories, type Category } from '../../data/expenses';
 import { MarkDoneForm } from './MarkDoneForm';
-import { formatDMY } from '../../core/dates/dates';
+import { formatDMY, todayIST } from '../../core/dates/dates';
 import { formatINR } from '../../core/money/money';
 import type { ReminderInput } from '../../core/reminders/schema';
 import { EmptyState } from '../placeholders/Screens';
@@ -17,6 +17,8 @@ import { ReminderForm } from './ReminderForm';
 import { useReminders, type ReminderView } from './useReminders';
 import { STATUS_BADGE, timingText } from './reminderText';
 import type { ReminderStatus } from '../../core/reminders/due';
+import { NotificationOptIn } from './NotificationOptIn';
+import { notifyDue } from './notificationSettings';
 
 const GROUPS: { status: ReminderStatus; title: string }[] = [
   { status: 'overdue', title: 'Overdue' },
@@ -38,6 +40,13 @@ export function RemindersPage() {
       .then(setCategories)
       .catch(() => setCategories([]));
   }, []);
+  useEffect(() => {
+    if (!items) return;
+    notifyDue(
+      items.map((r) => ({ id: r.id, title: r.title, status: r.state.status })),
+      todayIST()
+    );
+  }, [items]);
   const [notice, setNotice] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
 
@@ -117,6 +126,7 @@ export function RemindersPage() {
         </button>
       </div>
       <p className="muted">{activeVehicle.registrationNo}</p>
+      <NotificationOptIn />
 
       {notice && (
         <p role="status" className="notice">
