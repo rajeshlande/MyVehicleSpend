@@ -16,6 +16,7 @@ import {
 } from '../../core/reports/period';
 import { buildDashboard } from '../../core/reports/dashboard';
 import { DonutChart, MonthlyBars } from './Charts';
+import { PeriodPicker } from '../reports/PeriodPicker';
 
 interface Loaded {
   expenses: Expense[];
@@ -26,14 +27,6 @@ interface LoanSummary {
   count: number;
   outstanding: number;
 }
-
-const PRESETS: { value: PeriodPreset; label: string }[] = [
-  { value: 'this_month', label: 'This month' },
-  { value: 'last_month', label: 'Last month' },
-  { value: 'this_fy', label: 'This FY (Apr–Mar)' },
-  { value: 'last_12', label: 'Last 12 months' },
-  { value: 'custom', label: 'Custom' },
-];
 
 const SHORT_MONTH = (ym: string) => {
   const [y, m] = ym.split('-').map(Number) as [number, number];
@@ -106,45 +99,13 @@ export function Dashboard({ vehicle }: { vehicle: VehicleLike }) {
 
   return (
     <section aria-label="Dashboard" className="dashboard">
-      <div className="dashboard-period">
-        <label>
-          Period{' '}
-          <select value={preset} onChange={(e) => setPreset(e.target.value as PeriodPreset)}>
-            {PRESETS.map((p) => (
-              <option key={p.value} value={p.value}>
-                {p.label}
-              </option>
-            ))}
-          </select>
-        </label>
-        {preset === 'custom' && (
-          <>
-            <label>
-              From{' '}
-              <input
-                type="date"
-                aria-label="From"
-                value={custom.from}
-                onChange={(e) => setCustom({ ...custom, from: e.target.value })}
-              />
-            </label>
-            <label>
-              To{' '}
-              <input
-                type="date"
-                aria-label="To"
-                value={custom.to}
-                onChange={(e) => setCustom({ ...custom, to: e.target.value })}
-              />
-            </label>
-          </>
-        )}
-        {rangeProblem && (
-          <p role="alert" className="field-error">
-            {rangeProblem}
-          </p>
-        )}
-      </div>
+      <PeriodPicker
+        preset={preset}
+        onPreset={setPreset}
+        custom={custom}
+        onCustom={setCustom}
+        problem={rangeProblem}
+      />
 
       {loadError && (
         <p role="alert" className="field-error">

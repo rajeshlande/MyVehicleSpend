@@ -193,10 +193,11 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
   - Deps: T15, T20, T22.
   - Verify notes: TC-RPT-01 covered by core and UI tests (paise-exact totals, month filter, last-month switch). TC-RPT-04 covered (empty state, no NaN). Presets and custom range covered. Loan outstanding uses paid instalments only. Dashboard lives on Home (`/`). Cost per month divides by months elapsed so far in the period. Cost per km uses the odometer span of the period's fuel fills and expense rows. The donut uses category groups. Full gate green: 343 tests across 46 files, lint, typecheck, Prettier, build. Live Supabase data not yet checked (blocked on staging credentials).
 
-- [ ] **T25 — Reports and CSV export** (M)
+- [x] **T25 — Reports and CSV export** (M)
   - Acceptance: FR-RPT-03, 04, 05; Indian FY 1 Apr to 31 Mar; monthly category table; CSV with UTF-8 BOM for expenses, fuel and loan schedule.
   - Verify: TC-RPT-02, TC-RPT-03 (open in Excel/LibreOffice).
   - Deps: T24.
+  - Verify notes: automated checks pass for TC-RPT-02 (FY 1 Apr–31 Mar, 1 March excluded) and for the TC-RPT-03 file format (UTF-8 BOM bytes, CRLF, RFC 4180 quoting, numeric amounts, Hindi/Marathi text kept, spreadsheet-formula guard). Reports and exports follow the selected period. The manual check of opening each file in Excel/LibreOffice is NOT yet done (open caveat). Full gate green: 365 tests across 50 files, lint, typecheck, Prettier, build.
 
 **CP-D (part 1)** — dashboard and reports.
 

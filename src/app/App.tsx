@@ -8,6 +8,7 @@ import { HomePage, MorePage } from '../features/placeholders/Screens';
 import { LoansPage } from '../features/loans/LoansPage';
 import { LoanDetailPage } from '../features/loans/LoanDetailPage';
 import { RemindersPage } from '../features/reminders/RemindersPage';
+import { ReportsPage } from '../features/reports/ReportsPage';
 import { QuickAddPage } from '../features/expenses/QuickAddPage';
 import { FuelPage } from '../features/fuel/FuelPage';
 import { ExpensesPage } from '../features/expenses/ExpensesPage';
@@ -48,6 +49,7 @@ export function App() {
                       <Route path="/loans" element={<LoansPage />} />
                       <Route path="/loans/:loanId" element={<LoanDetailPage />} />
                       <Route path="/reminders" element={<RemindersPage />} />
+                      <Route path="/reports" element={<ReportsPage />} />
                       <Route path="/add" element={<QuickAddPage />} />
                       <Route path="/more" element={<MorePage />} />
                       <Route path="/vehicles" element={<VehiclesPage />} />
