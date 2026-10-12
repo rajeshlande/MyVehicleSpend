@@ -506,3 +506,137 @@ select {
   background: #fff4e5;
   border-bottom-color: #f0c98a;
 }
+
+/* ---- Home redesign: hero, category tiles, timeline, floating nav ---- */
+.home-hero {
+  margin-bottom: var(--space-2);
+  background: linear-gradient(135deg, var(--hero-from), var(--hero-to));
+  color: #ffffff;
+  border: 0;
+  border-radius: 20px;
+  padding: var(--space-2);
+  box-shadow: 0 12px 24px rgba(42, 163, 152, 0.25);
+}
+.home-hero .hint,
+.home-hero .home-hero-title {
+  color: #ffffff;
+}
+.home-hero .hint {
+  opacity: 0.9;
+}
+.home-hero-title {
+  display: block;
+  font-size: 1.5rem;
+}
+.home-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+}
+.hero-btn {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 0 var(--space-2);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--hero-to);
+  font-weight: 700;
+  text-decoration: none;
+}
+.hero-btn-ghost {
+  background: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+}
+.home-hero a.home-hero-manage {
+  color: #ffffff;
+  margin-top: var(--space-1);
+  text-decoration: underline;
+}
+
+.category-tiles h3 {
+  margin: var(--space-3) 0 var(--space-1);
+}
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-1);
+}
+.category-tile {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  border-radius: 16px;
+  color: #1a1f2b;
+  min-width: 0;
+}
+.category-tile strong {
+  display: block;
+  overflow-wrap: anywhere;
+}
+.category-amount {
+  font-size: 0.9rem;
+  color: #4a5263;
+}
+.tint-teal {
+  background: var(--tint-teal);
+  color: #14807a;
+}
+.tint-blue {
+  background: var(--tint-blue);
+  color: #1d4e89;
+}
+.tint-rose {
+  background: var(--tint-rose);
+  color: #b3261e;
+}
+.tint-amber {
+  background: var(--tint-amber);
+  color: #8a5300;
+}
+.ring-track {
+  fill: none;
+  stroke: rgba(0, 0, 0, 0.08);
+  stroke-width: 5;
+}
+.ring-value {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+.ring-label {
+  font-size: 10px;
+  font-weight: 700;
+  fill: currentColor;
+}
+
+/* Timeline reminders on Home */
+.timeline li {
+  position: relative;
+  padding-left: var(--space-2);
+}
+.timeline li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--hero-to);
+}
+
+/* Floating pill navigation on phones */
+.bottom-nav {
+  left: var(--space-1);
+  right: var(--space-1);
+  bottom: calc(var(--space-1) + env(safe-area-inset-bottom));
+  border: 0;
+  border-radius: 999px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+  padding-bottom: 0;
+  background: var(--bg);
+}

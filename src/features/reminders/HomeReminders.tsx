@@ -34,7 +34,7 @@ export function HomeReminders({ vehicle }: { vehicle: VehicleLike }) {
       {shown.length === 0 ? (
         <p className="muted">Nothing overdue or due in the next 30 days.</p>
       ) : (
-        <ul className="expense-list">
+        <ul className="expense-list timeline">
           {shown.map((r) => (
             <li key={r.id} className="expense-row">
               <strong>{r.title}</strong>{' '}

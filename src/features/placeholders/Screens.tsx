@@ -34,19 +34,31 @@ export function HomePage() {
   return (
     <>
       <h1>Home</h1>
-      <section className="vehicle-card" aria-labelledby="active-vehicle">
+      <section className="vehicle-card home-hero" aria-labelledby="active-vehicle">
         <div>
           <p className="hint" id="active-vehicle">
             Active vehicle
           </p>
-          <strong>{formatRegistration(activeVehicle.registrationNo)}</strong>
+          <strong className="home-hero-title">
+            {formatRegistration(activeVehicle.registrationNo)}
+          </strong>
           <div className="hint">
             {[activeVehicle.make, activeVehicle.model].filter(Boolean).join(' ') ||
               activeVehicle.vehicleType}{' '}
             · {activeVehicle.startOdometerKm.toLocaleString('en-IN')} km
           </div>
         </div>
-        <Link to="/vehicles">Manage vehicles</Link>
+        <div className="home-hero-actions">
+          <Link to="/add" className="hero-btn">
+            Add entry
+          </Link>
+          <Link to="/reminders" className="hero-btn hero-btn-ghost">
+            Reminders
+          </Link>
+        </div>
+        <Link to="/vehicles" className="home-hero-manage">
+          Manage vehicles
+        </Link>
       </section>
       <Dashboard vehicle={activeVehicle} />
     </>

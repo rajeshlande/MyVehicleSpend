@@ -32,3 +32,13 @@
     --border: #2c313b;
   }
 }
+
+/* Home redesign (reference UI): hero gradient and category tints. Light and dark share these. */
+:root {
+  --hero-from: #5fd3c6;
+  --hero-to: #2aa398;
+  --tint-teal: #e3f6f3;
+  --tint-blue: #e6eefc;
+  --tint-rose: #fde9ec;
+  --tint-amber: #fff3dc;
+}

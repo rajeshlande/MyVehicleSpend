@@ -14,7 +14,7 @@ import {
   type DateRange,
   type PeriodPreset,
 } from '../../core/reports/period';
-import { buildDashboard } from '../../core/reports/dashboard';
+import { buildDashboard, type GroupTotal } from '../../core/reports/dashboard';
 import { DonutChart, MonthlyBars } from './Charts';
 import { PeriodPicker } from '../reports/PeriodPicker';
 
@@ -191,25 +191,66 @@ function Summary({ data, range, today }: { data: Loaded; range: DateRange; today
       {s.count === 0 ? (
         <p className="muted">No spend in this period.</p>
       ) : (
-        <div className="dashboard-charts">
-          <div className="dashboard-card">
-            <h3>By category</h3>
-            <DonutChart
-              slices={s.byGroup.map((g) => ({ label: g.group, share: g.share, amount: g.total }))}
-            />
+        <>
+          <CategoryTiles groups={s.byGroup} />
+          <div className="dashboard-charts">
+            <div className="dashboard-card">
+              <h3>By category</h3>
+              <DonutChart
+                slices={s.byGroup.map((g) => ({ label: g.group, share: g.share, amount: g.total }))}
+              />
+            </div>
+            <div className="dashboard-card">
+              <h3>Monthly trend</h3>
+              <MonthlyBars
+                bars={s.monthly.map((m) => ({
+                  label: SHORT_MONTH(m.month),
+                  total: m.total,
+                  height: maxMonth > 0 ? m.total / maxMonth : 0,
+                }))}
+              />
+            </div>
           </div>
-          <div className="dashboard-card">
-            <h3>Monthly trend</h3>
-            <MonthlyBars
-              bars={s.monthly.map((m) => ({
-                label: SHORT_MONTH(m.month),
-                total: m.total,
-                height: maxMonth > 0 ? m.total / maxMonth : 0,
-              }))}
-            />
-          </div>
-        </div>
+        </>
       )}
     </>
+  );
+}
+
+const TILE_TINTS = ['tint-teal', 'tint-blue', 'tint-rose', 'tint-amber'] as const;
+const RING_RADIUS = 20;
+const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
+
+/** Category tiles with a progress ring for each group's share of the period total. */
+export function CategoryTiles({ groups }: { groups: GroupTotal[] }) {
+  if (groups.length === 0) return null;
+  return (
+    <section className="category-tiles" aria-labelledby="category-tiles-title">
+      <h3 id="category-tiles-title">Categories</h3>
+      <div className="category-grid">
+        {groups.map((g, i) => (
+          <article key={g.group} className={`category-tile ${TILE_TINTS[i % TILE_TINTS.length]}`}>
+            <svg width="56" height="56" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+              <circle cx="24" cy="24" r={RING_RADIUS} className="ring-track" />
+              <circle
+                cx="24"
+                cy="24"
+                r={RING_RADIUS}
+                className="ring-value"
+                strokeDasharray={`${RING_CIRCUMFERENCE * g.share} ${RING_CIRCUMFERENCE}`}
+                transform="rotate(-90 24 24)"
+              />
+              <text x="24" y="28" textAnchor="middle" className="ring-label">
+                {Math.round(g.share * 100)}%
+              </text>
+            </svg>
+            <div>
+              <strong>{g.group}</strong>
+              <div className="category-amount">{formatINR(g.total)}</div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
   );
 }
