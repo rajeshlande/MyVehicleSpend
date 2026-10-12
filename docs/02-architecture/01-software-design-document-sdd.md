@@ -90,12 +90,13 @@ for k in 1..n:
 ```
 EMI_flat = (P + P * R * (n/12) / 100) / n    # R = flat annual %, n = months
 effective_rate ≈ solve r such that PV(EMI_flat, n, r) = P   # Newton-Raphson, 50 iterations max
+# Shown as nominal annual rate = monthly × 12 (about 14.5% for TC-LOAN-04)
 ```
 
 ### 5.4 Prepayment (reduce tenure, keep EMI)
 
 Recompute remaining months `n'` so that `PV(EMI, n', r) = outstanding`:
-`n' = -ln(1 - outstanding * r / EMI) / ln(1 + r)`, rounded up. If the denominator ≤ 0, the loan is fully repaid.
+`n' = -ln(1 - outstanding * r / EMI) / ln(1 + r)`, rounded up. If the denominator ≤ 0, the EMI does not cover the monthly interest and the loan would never amortise: the app returns `null` and does not offer this option. (Corrected 2026-10-11; the previous wording called this "fully repaid", which is wrong.) Zero outstanding gives 0 months.
 
 ### 5.5 Prepayment (reduce EMI, keep tenure)
 

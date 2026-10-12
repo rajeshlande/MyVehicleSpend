@@ -130,9 +130,9 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
 
 ## Phase 5 — Loans
 
-- [ ] **T17 — EMI engine (pure, test-first)** (M)
+- [x] **T17 — EMI engine (pure, test-first)** (M)
   - Acceptance: reducing-balance EMI per SDD §5.1; flat-rate EMI per corrected formula (N in months); zero-rate case; schedule with last row adjustment (SDD §5.2); total principal equals loan amount exactly.
-  - Verify: TC-LOAN-01 (₹16,703.92 for 800000 @ 9.25% × 60), TC-LOAN-02, TC-LOAN-03, TC-LOAN-04 (₹17,222.22). Cross-check against spreadsheet `PMT` before marking done.
+  - Verify: TC-LOAN-01 ✔ (₹16,703.92, cross-checked with an independent PMT calculation), TC-LOAN-02 ✔, TC-LOAN-03 ✔, TC-LOAN-04 ✔ (₹17,222.22; effective rate ≈ 14.5% nominal, computed), TC-LOAN-07 ✔ (38 months), TC-LOAN-08 ✔ (₹14,113.58), TC-LOAN-09 ✔ (engine), TC-LOAN-10 ✔ (engine). `src/core/loans/emi.test.ts`, 17 tests. **Decision recorded:** SDD §5.4 zero-denominator case is now `null` (EMI does not cover interest), not 'fully repaid'.
   - Deps: T1.
 
 - [ ] **T18 — Loan CRUD and schedule view** (M)
