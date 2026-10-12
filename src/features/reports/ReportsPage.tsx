@@ -220,28 +220,30 @@ function VehicleReports({
                 )}
 
                 {s.byGroup.length > 0 && (
-                  <table className="report-table" aria-label="Category totals">
-                    <thead>
-                      <tr>
-                        <th scope="col">Category</th>
-                        <th scope="col" className="num">
-                          Amount
-                        </th>
-                        <th scope="col" className="num">
-                          %
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {s.byGroup.map((g) => (
-                        <tr key={g.group}>
-                          <th scope="row">{g.group}</th>
-                          <td className="num">{formatINR(g.total)}</td>
-                          <td className="num">{Math.round(g.share * 100)}%</td>
+                  <div className="report-scroll">
+                    <table className="report-table" aria-label="Category totals">
+                      <thead>
+                        <tr>
+                          <th scope="col">Category</th>
+                          <th scope="col" className="num">
+                            Amount
+                          </th>
+                          <th scope="col" className="num">
+                            %
+                          </th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {s.byGroup.map((g) => (
+                          <tr key={g.group}>
+                            <th scope="row">{g.group}</th>
+                            <td className="num">{formatINR(g.total)}</td>
+                            <td className="num">{Math.round(g.share * 100)}%</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 )}
 
                 {table.groups.length > 0 && (
