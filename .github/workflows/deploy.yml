@@ -1,16 +1,33 @@
-# Frontend deploy (Deployment Guide §4.3). develop → Cloudflare Pages preview (staging); main → production.
+# Frontend deploy to GitHub Pages (https://<owner>.github.io/<repo>/). Runs on push to main.
+# One-time setup: Settings → Pages → Source: GitHub Actions.
+# Repository variables (public values only, never the service_role key):
+#   VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY
+# The Supabase Auth URL configuration must list the Pages address (see docs/05-deployment-maintenance).
 name: Deploy frontend
+
 on:
   push:
-    branches: [develop, main]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-    environment: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
     env:
-      VITE_SUPABASE_URL: ${{ github.ref_name == 'main' && secrets.VITE_SUPABASE_URL_PROD || secrets.VITE_SUPABASE_URL_STAGING }}
-      VITE_SUPABASE_ANON_KEY: ${{ github.ref_name == 'main' && secrets.VITE_SUPABASE_ANON_KEY_PROD || secrets.VITE_SUPABASE_ANON_KEY_STAGING }}
-      VITE_APP_ENV: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
+      VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+      VITE_APP_ENV: production
+      # Project sites are served from /<repo>/, so the build must use that base path.
+      VITE_BASE_PATH: /${{ github.event.repository.name }}/
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -22,9 +39,20 @@ jobs:
       - run: npm run typecheck
       - run: npx vitest run
       - run: npm run build
-      - name: Publish to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
+      # GitHub Pages serves 404.html for unknown paths. A copy of the app shell lets deep links
+      # (for example /reports after a refresh) load the app and route client-side.
+      - run: cp dist/index.html dist/404.html
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=my-vehicle-spend --branch=${{ github.ref_name == 'main' && 'main' || 'staging' }}
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
