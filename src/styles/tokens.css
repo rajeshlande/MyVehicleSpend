@@ -1,42 +1,46 @@
-/* Design tokens — UI/UX Design §6.1. Light by default, dark when the system asks for it. */
+/* Design tokens. Light by default, dark when the system asks for it.
+   Palette from the "Base" dashboard design (violet primary, soft grey page, white cards).
+   Every text/background pair must meet 4.5:1 — see tests/a11y/contrast.test.ts. */
 :root {
+  --page: #f7f8fc;
   --bg: #ffffff;
-  --surface: #f5f7fa;
-  --text: #1a1f2b;
-  --muted: #5b6475;
-  --primary: #0b6e4f;
+  --surface: #f3f4fa;
+  --text: #14142b;
+  --muted: #63677f;
+  --primary: #5b56e8;
   --primary-contrast: #ffffff;
   --warn: #8a5300;
   --danger: #b3261e;
-  --info: #1d4e89;
-  --border: #d9dee7;
-  --radius: 12px;
+  --info: #3b5bdb;
+  --border: #e4e6f0;
+  --radius: 16px;
   --tap: 44px;
   --space-1: 8px;
   --space-2: 16px;
   --space-3: 24px;
-  --font: -apple-system, 'Segoe UI', Roboto, 'Noto Sans', sans-serif;
+  --font: 'Nunito', -apple-system, 'Segoe UI', Roboto, 'Noto Sans', sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0f1115;
-    --surface: #1a1d24;
-    --text: #e8ecf2;
-    --muted: #9aa3b2;
-    --primary: #3cc59a;
-    --primary-contrast: #0f1115;
+    --page: #0f1117;
+    --bg: #171a24;
+    --surface: #20243a;
+    --text: #eef0f8;
+    --muted: #a3a8bd;
+    --primary: #8b87ff;
+    --primary-contrast: #0f1117;
     --warn: #f5b041;
     --danger: #f2b8b5;
-    --info: #8ab4f8;
-    --border: #2c313b;
+    --info: #9ec5ff;
+    --border: #2c3047;
   }
 }
 
-/* Home redesign (reference UI): hero gradient and category tints. Light and dark share these. */
+/* Hero gradient and category tints. Light and dark share these. */
 :root {
-  --hero-from: #15786e;
-  --hero-to: #0f5c55;
+  --hero-from: #5b56e8;
+  --hero-to: #4540c9;
   --tint-teal: #e3f6f3;
   --tint-blue: #e6eefc;
   --tint-rose: #fde9ec;
