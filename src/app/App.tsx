@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from '../features/auth/AuthContext';
 import { LoginPage } from '../features/auth/LoginPage';
@@ -5,10 +6,7 @@ import { SignUpPage } from '../features/auth/SignUpPage';
 import { RequireAuth } from '../features/auth/RequireAuth';
 import { AppShell } from '../components/AppShell';
 import { HomePage, MorePage } from '../features/placeholders/Screens';
-import { LoansPage } from '../features/loans/LoansPage';
-import { LoanDetailPage } from '../features/loans/LoanDetailPage';
 import { RemindersPage } from '../features/reminders/RemindersPage';
-import { ReportsPage } from '../features/reports/ReportsPage';
 import { BackupPage } from '../features/backup/BackupPage';
 import { AccountPage } from '../features/account/AccountPage';
 import { QuickAddPage } from '../features/expenses/QuickAddPage';
@@ -17,6 +15,17 @@ import { ExpensesPage } from '../features/expenses/ExpensesPage';
 import { VehicleProvider } from '../features/vehicles/VehicleContext';
 import { VehiclesPage } from '../features/vehicles/VehiclesPage';
 import { isConfigured } from '../data/supabase';
+
+// T32: Reports and Loans are off the first-load path. They load when the route is opened.
+const ReportsPage = lazy(() =>
+  import('../features/reports/ReportsPage').then((m) => ({ default: m.ReportsPage }))
+);
+const LoansPage = lazy(() =>
+  import('../features/loans/LoansPage').then((m) => ({ default: m.LoansPage }))
+);
+const LoanDetailPage = lazy(() =>
+  import('../features/loans/LoanDetailPage').then((m) => ({ default: m.LoanDetailPage }))
+);
 
 function ConfigMissing() {
   return (
@@ -45,20 +54,28 @@ export function App() {
               <RequireAuth>
                 <VehicleProvider>
                   <AppShell>
-                    <Routes>
-                      <Route path="/" element={<HomePage />} />
-                      <Route path="/expenses" element={<ExpensesPage />} />
-                      <Route path="/loans" element={<LoansPage />} />
-                      <Route path="/loans/:loanId" element={<LoanDetailPage />} />
-                      <Route path="/reminders" element={<RemindersPage />} />
-                      <Route path="/reports" element={<ReportsPage />} />
-                      <Route path="/backup" element={<BackupPage />} />
-                      <Route path="/account" element={<AccountPage />} />
-                      <Route path="/add" element={<QuickAddPage />} />
-                      <Route path="/more" element={<MorePage />} />
-                      <Route path="/vehicles" element={<VehiclesPage />} />
-                      <Route path="/fuel" element={<FuelPage />} />
-                    </Routes>
+                    <Suspense
+                      fallback={
+                        <p className="hint" role="status">
+                          Loading…
+                        </p>
+                      }
+                    >
+                      <Routes>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/expenses" element={<ExpensesPage />} />
+                        <Route path="/loans" element={<LoansPage />} />
+                        <Route path="/loans/:loanId" element={<LoanDetailPage />} />
+                        <Route path="/reminders" element={<RemindersPage />} />
+                        <Route path="/reports" element={<ReportsPage />} />
+                        <Route path="/backup" element={<BackupPage />} />
+                        <Route path="/account" element={<AccountPage />} />
+                        <Route path="/add" element={<QuickAddPage />} />
+                        <Route path="/more" element={<MorePage />} />
+                        <Route path="/vehicles" element={<VehiclesPage />} />
+                        <Route path="/fuel" element={<FuelPage />} />
+                      </Routes>
+                    </Suspense>
                   </AppShell>
                 </VehicleProvider>
               </RequireAuth>
