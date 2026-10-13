@@ -13,15 +13,37 @@ const TABS = [
   { to: '/more', label: 'More', icon: '⋯' },
 ] as const;
 
+/**
+ * Sidebar (Base design). Template items mapped to existing features:
+ * Dashboard→Home, Analytics→Reports, Expenses, Invoice→Loans, Schedule→Reminders, Settings→More.
+ * Calendar, Messages and Notifications are added in later slices.
+ */
+const SIDE_LINKS = [
+  { to: '/', label: 'Dashboard', icon: '▦' },
+  { to: '/reports', label: 'Analytics', icon: '📈' },
+  { to: '/expenses', label: 'Expenses', icon: '🧾' },
+  { to: '/loans', label: 'Loans', icon: '🏦' },
+  { to: '/reminders', label: 'Reminders', icon: '🗓' },
+  { to: '/more', label: 'Settings', icon: '⚙' },
+] as const;
+
 export function AppShell({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   return (
     <div className="app-shell">
       <nav className="side-nav" aria-label="Primary">
-        <strong>My Vehicle Spend</strong>
-        {TABS.map((t) => (
+        <div className="brand">
+          <span className="brand-mark" aria-hidden="true">
+            MV
+          </span>
+          <strong>My Vehicle Spend</strong>
+        </div>
+        {SIDE_LINKS.map((t) => (
           <NavLink key={t.to} to={t.to} end={t.to === '/'}>
-            <span aria-hidden="true">{t.icon}</span> {t.label}
+            <span aria-hidden="true" className="side-icon">
+              {t.icon}
+            </span>{' '}
+            {t.label}
           </NavLink>
         ))}
         <button type="button" onClick={() => navigate('/add')}>

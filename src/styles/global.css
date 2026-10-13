@@ -251,9 +251,33 @@ button:disabled {
     text-align: left;
   }
   .side-nav a[aria-current='page'] {
-    background: var(--bg);
-    color: var(--primary);
+    background: var(--primary);
+    color: var(--primary-contrast);
     font-weight: 700;
+  }
+  .side-nav {
+    background: var(--bg);
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 8px 16px;
+  }
+  .brand-mark {
+    display: inline-grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--primary);
+    color: var(--primary-contrast);
+    font-weight: 800;
+    font-size: 13px;
+  }
+  .side-icon {
+    width: 1.5em;
+    text-align: center;
   }
   .app-main {
     padding-bottom: var(--space-3);

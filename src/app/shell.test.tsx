@@ -78,6 +78,42 @@ describe('TC-UI-01 — navigation', () => {
   });
 });
 
+describe('sidebar navigation (Base design mapping)', () => {
+  it('lists the mapped destinations in order with their routes', async () => {
+    renderApp('/');
+    const side = await screen.findByRole('navigation', { name: 'Primary' });
+    const links = within(side).getAllByRole('link');
+    expect(
+      links.map((l) => [l.textContent?.replace(/^\S+\s+/, '').trim(), l.getAttribute('href')])
+    ).toEqual([
+      ['Dashboard', '/'],
+      ['Analytics', '/reports'],
+      ['Expenses', '/expenses'],
+      ['Loans', '/loans'],
+      ['Reminders', '/reminders'],
+      ['Settings', '/more'],
+    ]);
+  });
+
+  it('marks the current destination with aria-current', async () => {
+    renderApp('/reports');
+    const side = await screen.findByRole('navigation', { name: 'Primary' });
+    expect(within(side).getByRole('link', { name: 'Analytics' })).toHaveAttribute(
+      'aria-current',
+      'page'
+    );
+    expect(within(side).getByRole('link', { name: 'Dashboard' })).not.toHaveAttribute(
+      'aria-current'
+    );
+  });
+
+  it('keeps the Add entry button in the sidebar', async () => {
+    renderApp('/');
+    const side = await screen.findByRole('navigation', { name: 'Primary' });
+    expect(within(side).getByRole('button', { name: 'Add entry' })).toBeInTheDocument();
+  });
+});
+
 describe('about', () => {
   it("More links to What's new and shows the version", async () => {
     renderApp('/more');
