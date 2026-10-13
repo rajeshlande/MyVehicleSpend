@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from '../features/auth/AuthContext';
 import { LoginPage } from '../features/auth/LoginPage';
 import { SignUpPage } from '../features/auth/SignUpPage';
+import { WhatsNewPage } from '../features/about/WhatsNewPage';
 import { RecoverPage } from '../features/auth/RecoverPage';
 import { RequireAuth } from '../features/auth/RequireAuth';
 import { AppShell } from '../components/AppShell';
@@ -76,6 +77,7 @@ export function App() {
                         <Route path="/more" element={<MorePage />} />
                         <Route path="/vehicles" element={<VehiclesPage />} />
                         <Route path="/fuel" element={<FuelPage />} />
+                        <Route path="/whats-new" element={<WhatsNewPage />} />
                       </Routes>
                     </Suspense>
                   </AppShell>

@@ -78,6 +78,17 @@ describe('TC-UI-01 — navigation', () => {
   });
 });
 
+describe('about', () => {
+  it("More links to What's new and shows the version", async () => {
+    renderApp('/more');
+    expect(await screen.findByRole('link', { name: "What's new" })).toHaveAttribute(
+      'href',
+      '/whats-new'
+    );
+    expect(screen.getByText(new RegExp(`Version ${__APP_VERSION__}`))).toBeInTheDocument();
+  });
+});
+
 describe('sign out', () => {
   it('calls signOut and returns to login', async () => {
     renderApp('/more');

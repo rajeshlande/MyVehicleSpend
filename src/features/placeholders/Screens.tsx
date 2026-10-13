@@ -1,6 +1,7 @@
 import { Dashboard } from '../dashboard/Dashboard';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
+import { AppVersion } from '../about/AppVersion';
 import { useSignOut } from '../../components/AppShell';
 import { useVehicles } from '../vehicles/VehicleContext';
 import { formatRegistration } from '../../core/vehicles/registration';
@@ -72,6 +73,9 @@ export function MorePage() {
       <h1>More</h1>
       <ul>
         <li>
+          <Link to="/whats-new">What&apos;s new</Link>
+        </li>
+        <li>
           <Link to="/vehicles">Vehicles</Link>
         </li>
         <li>
@@ -97,6 +101,7 @@ export function MorePage() {
       <button type="button" className="btn-secondary" onClick={() => void signOut()}>
         Sign out
       </button>
+      <AppVersion />
     </>
   );
 }
