@@ -265,10 +265,13 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
   - Verify notes: `scripts/a11y-scan.mjs` (axe-core 4.14.0, exact devDependency) scans 11 signed-in and 2 signed-out routes in light and dark at 375 px against a stub-env build. Final run: 26 pages, 0 violations of any severity. Fixes: hero gradient darkened so white text passes; "Add entry" button text; dashboard cards, report table borders, bar labels and sync banners moved to theme tokens (they were hard-coded white); light `--warn` darkened to `#8a5300` (white text on the offline banner was 4.24:1); category tint text darkened; headings no longer skip h2. `tests/a11y/contrast.test.ts` (8) computes the ratios from the real token files. `scripts/keyboard-check.mjs` drives Chromium through the add-expense form with Tab, arrow keys and Enter: 6/6 pass. Full gate: vitest 486/486 across 71 files; lint, prettier, tsc and build OK.
   - TC status: TC-UI-03 verified (contrast in both themes; charts covered by the axe scan). TC-UI-04 verified in Chromium. TC-UI-05 verified (zero critical, zero serious). Not covered: TC-UI-06 (320 px) is a separate case, and the scan runs against stub data, not the live backend.
 
-- [ ] **T32 — Performance budget** (S)
+- [x] **T32 — Performance budget** (S)
   - Acceptance: initial JS ≤ 250 KB gzip; route-level lazy loading for Reports and Loans; dashboard with 5,000 rows ≤ 1.5 s.
   - Verify: TC-PERF-01, 02, 03 (Lighthouse mid-range profile).
   - Deps: T24.
+  - Verify notes: Reports, Loans and Loan detail are `React.lazy` routes inside a Suspense boundary (`tests/perf/lazy-routes.test.ts`, 4 checks). Build: the three pages are separate chunks. Initial JS (entry script) is 185,219 B gzip against a 250,000 B budget (`scripts/bundle-budget.mjs`, run after `npm run build`). `scripts/perf-check.mjs` (Chromium, stub backend, 5,000 expenses, dashboard `dash-total` after the response, 3 runs): 1x CPU worst 300 ms; 4x CPU worst 895 ms; both ≤ 1,500 ms. Total shown ₹17,47,500.00, which matches the sum of the sample rows. Lighthouse 12, mobile, simulated 4G and 4x CPU, on `/login` (stub build, local server): FCP 2.0 s, LCP 2.2 s, performance 0.97.
+  - TC status: TC-PERF-03 verified. TC-PERF-02 verified with the stub backend in Chromium; not yet on the hosted build. TC-PERF-01 verified on the signed-out login page only. The signed-in home has not been measured in Lighthouse.
+  - Also fixed: `src/app/shell.test.tsx` raised 9 unhandled "IndexedDB API missing" errors, which made `vitest` exit 1 even with all tests passing. It now loads `fake-indexeddb`, and the sign-out test waits for the auth call (sign-out clears the offline cache first, FR-PWA-03).
 
 **CP-E (part 1)** — quality gates green.
 

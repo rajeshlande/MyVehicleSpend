@@ -490,17 +490,17 @@
 ### TC-PERF-01 — First contentful paint (NFR-PERF-01)
 
 - **Expected:** ≤ 2.5 s on Lighthouse mid-range 4G profile.
-- **Status:** Not run
+- **Status:** Partly verified (T32). Lighthouse mobile on /login: FCP 2.0 s (limit 2.5 s). Signed-in home not yet measured; hosted build not yet measured.
 
 ### TC-PERF-02 — Dashboard load with 5,000 expenses (NFR-PERF-02)
 
 - **Expected:** ≤ 1.5 s from data fetch complete to render.
-- **Status:** Not run
+- **Status:** Verified on the stub backend (T32). 5,000 expenses: 300 ms at 1x CPU, 895 ms at 4x. Not yet on the hosted build.
 
 ### TC-PERF-03 — Bundle size (NFR-PERF-04)
 
 - **Expected:** Initial JS gzip ≤ 250 KB (`npm run build` report).
-- **Status:** Not run
+- **Status:** Verified (T32). Initial JS 185,219 B gzip against 250,000 B (scripts/bundle-budget.mjs).
 
 ---
 
