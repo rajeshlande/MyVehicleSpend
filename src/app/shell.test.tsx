@@ -1,5 +1,6 @@
+import 'fake-indexeddb/auto';
 import { describe, it, expect, beforeEach } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from '../features/auth/AuthContext';
@@ -81,7 +82,8 @@ describe('sign out', () => {
   it('calls signOut and returns to login', async () => {
     renderApp('/more');
     await userEvent.click(await screen.findByRole('button', { name: 'Sign out' }));
-    expect(authMock.signOut).toHaveBeenCalledTimes(1);
+    // Sign-out clears the offline cache first (FR-PWA-03), so the auth call comes after that step.
+    await waitFor(() => expect(authMock.signOut).toHaveBeenCalledTimes(1));
     expect(await screen.findByRole('heading', { name: 'Sign in' })).toBeInTheDocument();
   });
 });
