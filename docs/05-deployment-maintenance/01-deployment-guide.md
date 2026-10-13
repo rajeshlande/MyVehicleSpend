@@ -41,6 +41,16 @@
 | `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`               | Pages deploy                                                          |
 | `SUPABASE_SERVICE_ROLE_KEY`                                   | Edge Function secret (set via `supabase secrets set`, not GitHub)     |
 
+### 2.2a GitHub Pages site (free for public repositories)
+
+1. Repository → Settings → Pages → Source: **GitHub Actions**.
+2. Repository → Settings → Secrets and variables → Actions → Variables: add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` (the public values from the Supabase API settings). Never add the service_role key.
+3. Supabase → Authentication → URL Configuration:
+   - Site URL: `https://<owner>.github.io/<repo>/`
+   - Redirect URLs: add `https://<owner>.github.io/<repo>/login` and `https://<owner>.github.io/<repo>/**`
+     Without this, the password-reset and sign-up email links are rejected.
+4. Push to `main`. The site is at `https://<owner>.github.io/<repo>/`.
+
 ### 2.3 Cloudflare Pages project
 
 1. Dashboard → Workers & Pages → Create → Pages → Connect to Git (optional; CI deploy is preferred).
@@ -183,9 +193,19 @@ Staging migrations run the same way on `develop`, using staging secrets.
 
 ### 4.3 `.github/workflows/deploy.yml` (frontend)
 
-- `develop` push → deploy to Cloudflare Pages **preview** / staging branch.
-- `main` push (after tag) → deploy to **production** branch.
-- Build uses `VITE_*` values for the matching environment.
+- `main` push → checks (lint, typecheck, tests), build with `VITE_BASE_PATH=/<repo>/`, publish to **GitHub Pages**.
+- A copy of `index.html` is saved as `404.html` so deep links work after a refresh.
+- The Cloudflare Pages route described in §2.3 is an alternative. It needs `public/_headers` for the full security headers.
+
+### 4.3a Known gap on GitHub Pages: response headers
+
+GitHub Pages cannot set response headers. The build therefore adds the content security policy as a `<meta>` tag (`src/security/cspMeta.ts`, production builds only). These controls are **not** enforced on GitHub Pages:
+
+- `frame-ancestors` / `X-Frame-Options` (clickjacking protection)
+- `Strict-Transport-Security` (HSTS)
+- `Referrer-Policy`, `Permissions-Policy`, `X-Content-Type-Options`
+
+Accept this for a free public demo, or host on Cloudflare Pages (§2.3) for the full set. The gap is recorded here so it is not forgotten at sign-off.
 
 ### 4.4 `.github/workflows/keep-alive.yml` (prevents free-tier pause)
 
