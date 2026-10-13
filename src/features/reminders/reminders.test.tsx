@@ -177,3 +177,17 @@ describe('Home — reminders due in 30 days and overdue (FR-REM-02)', () => {
     expect(within(panel).queryByText('Far away')).not.toBeInTheDocument();
   });
 });
+
+describe('RemindersPage — Schedule rows (Base design)', () => {
+  it('each reminder row has a decorative icon tile tinted by its status', async () => {
+    api.listReminders.mockResolvedValue([
+      rem({ id: 'p', reminderType: 'puc', title: 'PUC certificate', dueDate: daysFromToday(-1) }),
+    ]);
+    renderPage();
+    const row = await screen.findByRole('listitem', { name: /PUC certificate/ });
+    const tile = row.querySelector('.schedule-icon');
+    expect(tile).not.toBeNull();
+    expect(tile).toHaveAttribute('aria-hidden', 'true');
+    expect(tile).toHaveClass('tint-rose');
+  });
+});

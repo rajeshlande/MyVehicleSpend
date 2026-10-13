@@ -851,3 +851,25 @@ select {
   cursor: pointer;
   min-height: var(--tap);
 }
+
+/* Schedule rows (Base design): icon tile on the left, status badge keeps the text signal. */
+.schedule-row {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: var(--space-2);
+  align-items: start;
+}
+.schedule-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  font-size: 20px;
+}
+.schedule-body {
+  min-width: 0;
+}
+.schedule-row .form-actions {
+  grid-column: 2;
+}

@@ -11,7 +11,7 @@ import { listCategories, type Category } from '../../data/expenses';
 import { MarkDoneForm } from './MarkDoneForm';
 import { formatDMY, todayIST } from '../../core/dates/dates';
 import { formatINR } from '../../core/money/money';
-import type { ReminderInput } from '../../core/reminders/schema';
+import type { ReminderInput, ReminderType } from '../../core/reminders/schema';
 import { EmptyState } from '../placeholders/Screens';
 import { ReminderForm } from './ReminderForm';
 import { useReminders, type ReminderView } from './useReminders';
@@ -171,6 +171,21 @@ export function RemindersPage() {
   );
 }
 
+/** Icon tile tint by status (Base design). Colour is never the only signal: the badge text stays. */
+const SCHEDULE_TINT: Record<ReminderStatus, string> = {
+  overdue: 'tint-rose',
+  due_soon: 'tint-amber',
+  upcoming: 'tint-blue',
+  done: 'tint-teal',
+};
+
+const REMINDER_ICON: Partial<Record<ReminderType, string>> = {
+  insurance: '🛡',
+  puc: '🌿',
+  fitness: '✅',
+  service_km: '🔧',
+};
+
 function ReminderItem({
   r,
   onEdit,
@@ -184,25 +199,31 @@ function ReminderItem({
 }) {
   const badge = STATUS_BADGE[r.state.status];
   return (
-    <li className="expense-row" aria-label={r.title}>
-      <div>
-        <strong>{r.title}</strong> <span className={`badge badge-${r.state.status}`}>{badge}</span>
-      </div>
-      <div className="muted">
-        {timingText(r, r.state).join(' · ')}
-        {r.dueDate ? ` · due ${formatDMY(r.dueDate)}` : ''}
-      </div>
-      {r.reminderType === 'insurance' && (
-        <div className="muted">
-          {[
-            r.insurer,
-            r.policyNo && `Policy ${r.policyNo}`,
-            r.idvAmount !== undefined && `IDV ${formatINR(r.idvAmount)}`,
-          ]
-            .filter(Boolean)
-            .join(' · ')}
+    <li className="expense-row schedule-row" aria-label={r.title}>
+      <span className={`schedule-icon ${SCHEDULE_TINT[r.state.status]}`} aria-hidden="true">
+        {REMINDER_ICON[r.reminderType] ?? '🔔'}
+      </span>
+      <div className="schedule-body">
+        <div>
+          <strong>{r.title}</strong>{' '}
+          <span className={`badge badge-${r.state.status}`}>{badge}</span>
         </div>
-      )}
+        <div className="muted">
+          {timingText(r, r.state).join(' · ')}
+          {r.dueDate ? ` · due ${formatDMY(r.dueDate)}` : ''}
+        </div>
+        {r.reminderType === 'insurance' && (
+          <div className="muted">
+            {[
+              r.insurer,
+              r.policyNo && `Policy ${r.policyNo}`,
+              r.idvAmount !== undefined && `IDV ${formatINR(r.idvAmount)}`,
+            ]
+              .filter(Boolean)
+              .join(' · ')}
+          </div>
+        )}
+      </div>
       <div className="form-actions">
         {r.state.status !== 'done' && (
           <button type="button" className="btn-primary" onClick={onMarkDone}>
