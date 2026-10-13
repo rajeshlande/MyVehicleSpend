@@ -150,7 +150,9 @@ export function QuickAddPage() {
         </button>
       </form>
       <p>
-        <a href="/expenses">Add details (date, vendor, GST, odometer)</a>
+        <a href={`${import.meta.env.BASE_URL}expenses`}>
+          Add details (date, vendor, GST, odometer)
+        </a>
       </p>
     </>
   );

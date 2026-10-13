@@ -3,14 +3,28 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import pkg from './package.json';
+import { cspMetaTag } from './src/security/cspMeta';
+
+// '/' locally; '/MyVehicleSpend/' for a GitHub Pages project site (set in the deploy workflow).
+const base = process.env.VITE_BASE_PATH || '/';
 
 export default defineConfig({
+  base,
   // Version shown in the app (Settings → About). Comes from package.json; see CHANGELOG.md.
   define: {
     __APP_VERSION__: JSON.stringify(pkg.version),
     __BUILD_DATE__: JSON.stringify(new Date().toISOString().slice(0, 10)),
   },
   plugins: [
+    {
+      // Production builds only: the dev server injects inline scripts that this policy would block.
+      name: 'csp-meta',
+      apply: 'build',
+      transformIndexHtml: {
+        order: 'post',
+        handler: (html) => html.replace('<head>', `<head>\n    ${cspMetaTag()}`),
+      },
+    },
     react(),
     VitePWA({
       // FR-PWA-06: the user chooses when to refresh (see UpdateBanner).
@@ -23,7 +37,8 @@ export default defineConfig({
         theme_color: '#0B6E4F',
         background_color: '#FFFFFF',
         display: 'standalone',
-        start_url: '/',
+        start_url: base,
+        scope: base,
         lang: 'en-IN',
         icons: [
           { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' },
@@ -40,7 +55,7 @@ export default defineConfig({
         // App shell only (FR-PWA-02). API responses are NOT cached here: the offline read cache
         // (T29a) will clear user data on sign-out, which a generic runtime cache would not.
         globPatterns: ['**/*.{js,css,html,png,svg,webmanifest}'],
-        navigateFallback: '/index.html',
+        navigateFallback: `${base}index.html`,
       },
     }),
   ],

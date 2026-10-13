@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { routerBasename } from './basename';
 import { AuthProvider } from '../features/auth/AuthContext';
 import { LoginPage } from '../features/auth/LoginPage';
 import { SignUpPage } from '../features/auth/SignUpPage';
@@ -45,7 +46,7 @@ function ConfigMissing() {
 export function App() {
   if (!isConfigured()) return <ConfigMissing />;
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={routerBasename(import.meta.env.BASE_URL)}>
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<LoginPage />} />

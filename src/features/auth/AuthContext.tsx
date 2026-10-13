@@ -93,7 +93,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       },
       resetPassword: async (email) => {
         const { error } = await getSupabase().auth.resetPasswordForEmail(email, {
-          redirectTo: `${window.location.origin}/login`,
+          // Include the Vite base path, so the link works on a sub-path such as GitHub Pages.
+          redirectTo: `${window.location.origin}${import.meta.env.BASE_URL}login`,
         });
         if (error?.code === 'over_email_send_rate_limit')
           return { error: 'Too many requests. Wait a minute, then try again.' };

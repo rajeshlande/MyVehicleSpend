@@ -61,7 +61,9 @@ describe('Design auth screens — email and password only', () => {
     await waitFor(() =>
       expect(authMock.resetPasswordForEmail).toHaveBeenCalledWith(
         'driver@example.com',
-        expect.objectContaining({ redirectTo: expect.stringContaining('/login') })
+        expect.objectContaining({
+          redirectTo: `${window.location.origin}${import.meta.env.BASE_URL}login`,
+        })
       )
     );
     expect(await screen.findByRole('status')).toHaveTextContent(
