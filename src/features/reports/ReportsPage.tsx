@@ -197,7 +197,7 @@ function VehicleReports({
                 ) : (
                   <div className="dashboard-charts">
                     <div className="dashboard-card">
-                      <h3>Monthly spend</h3>
+                      <h2>Monthly spend</h2>
                       <MonthlyBars
                         bars={s.monthly.map((m) => ({
                           label: SHORT_MONTH(m.month),
@@ -207,7 +207,7 @@ function VehicleReports({
                       />
                     </div>
                     <div className="dashboard-card">
-                      <h3>By category</h3>
+                      <h2>By category</h2>
                       <DonutChart
                         slices={s.byGroup.map((g) => ({
                           label: g.group,

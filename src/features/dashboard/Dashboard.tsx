@@ -195,13 +195,13 @@ function Summary({ data, range, today }: { data: Loaded; range: DateRange; today
           <CategoryTiles groups={s.byGroup} />
           <div className="dashboard-charts">
             <div className="dashboard-card">
-              <h3>By category</h3>
+              <h2>By category</h2>
               <DonutChart
                 slices={s.byGroup.map((g) => ({ label: g.group, share: g.share, amount: g.total }))}
               />
             </div>
             <div className="dashboard-card">
-              <h3>Monthly trend</h3>
+              <h2>Monthly trend</h2>
               <MonthlyBars
                 bars={s.monthly.map((m) => ({
                   label: SHORT_MONTH(m.month),
@@ -226,7 +226,7 @@ export function CategoryTiles({ groups }: { groups: GroupTotal[] }) {
   if (groups.length === 0) return null;
   return (
     <section className="category-tiles" aria-labelledby="category-tiles-title">
-      <h3 id="category-tiles-title">Categories</h3>
+      <h2 id="category-tiles-title">Categories</h2>
       <div className="category-grid">
         {groups.map((g, i) => (
           <article key={g.group} className={`category-tile ${TILE_TINTS[i % TILE_TINTS.length]}`}>

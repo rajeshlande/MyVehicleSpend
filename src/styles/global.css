@@ -377,12 +377,12 @@ select {
   margin-bottom: 1rem;
 }
 .dashboard-card {
-  border: 1px solid #e3e6ec;
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 0.9rem;
-  background: #fff;
+  background: var(--bg);
 }
-.dashboard-card h3 {
+.dashboard-card h2 {
   margin: 0 0 0.5rem;
   font-size: 1rem;
 }
@@ -449,7 +449,7 @@ select {
 }
 .bar-label {
   font-size: 0.7rem;
-  color: #6b7280;
+  color: var(--muted);
   margin-top: 4px;
   white-space: nowrap;
 }
@@ -464,7 +464,7 @@ select {
 .report-table th,
 .report-table td {
   padding: 0.45rem 0.6rem;
-  border-bottom: 1px solid #e3e6ec;
+  border-bottom: 1px solid var(--border);
   text-align: left;
 }
 .report-table .num {
@@ -498,13 +498,13 @@ select {
   align-items: center;
   justify-content: center;
   padding: 0.5rem 0.75rem;
-  background: #eef6f2;
-  border-bottom: 1px solid #b9dccb;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
   font-size: 0.9rem;
 }
 .pwa-offline {
-  background: #fff4e5;
-  border-bottom-color: #f0c98a;
+  background: var(--surface);
+  border-bottom-color: var(--warn);
 }
 
 /* ---- Home redesign: hero, category tiles, timeline, floating nav ---- */
@@ -520,9 +520,6 @@ select {
 .home-hero .hint,
 .home-hero .home-hero-title {
   color: #ffffff;
-}
-.home-hero .hint {
-  opacity: 0.9;
 }
 .home-hero-title {
   display: block;
@@ -555,7 +552,7 @@ select {
   text-decoration: underline;
 }
 
-.category-tiles h3 {
+.category-tiles h2 {
   margin: var(--space-3) 0 var(--space-1);
 }
 .category-grid {
@@ -582,7 +579,7 @@ select {
 }
 .tint-teal {
   background: var(--tint-teal);
-  color: #14807a;
+  color: #0b5f58;
 }
 .tint-blue {
   background: var(--tint-blue);

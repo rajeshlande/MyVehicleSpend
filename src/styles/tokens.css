@@ -6,7 +6,7 @@
   --muted: #5b6475;
   --primary: #0b6e4f;
   --primary-contrast: #ffffff;
-  --warn: #b26a00;
+  --warn: #8a5300;
   --danger: #b3261e;
   --info: #1d4e89;
   --border: #d9dee7;
@@ -35,8 +35,8 @@
 
 /* Home redesign (reference UI): hero gradient and category tints. Light and dark share these. */
 :root {
-  --hero-from: #5fd3c6;
-  --hero-to: #2aa398;
+  --hero-from: #15786e;
+  --hero-to: #0f5c55;
   --tint-teal: #e3f6f3;
   --tint-blue: #e6eefc;
   --tint-rose: #fde9ec;
