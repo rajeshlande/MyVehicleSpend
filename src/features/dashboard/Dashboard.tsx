@@ -17,6 +17,7 @@ import {
 import { buildDashboard, type GroupTotal } from '../../core/reports/dashboard';
 import { DonutChart, MonthlyBars } from './Charts';
 import { PeriodPicker } from '../reports/PeriodPicker';
+import { StatCard } from './StatCard';
 
 interface Loaded {
   expenses: Expense[];
@@ -132,23 +133,27 @@ export function Dashboard({ vehicle }: { vehicle: VehicleLike }) {
       )}
 
       <div className="dashboard-cards">
-        <div className="dashboard-card">
-          <p className="hint">Loan outstanding</p>
-          {loanError ? (
-            <p className="field-error">Could not load loans.</p>
-          ) : loans === null ? (
-            <p className="muted">Loading…</p>
-          ) : loans.count === 0 ? (
-            <p className="muted">No active loans.</p>
-          ) : (
-            <>
+        <StatCard
+          label="Loan outstanding"
+          value={
+            loanError ? (
+              <span className="field-error">Could not load loans.</span>
+            ) : loans === null ? (
+              <span className="muted">Loading…</span>
+            ) : loans.count === 0 ? (
+              <span className="muted">No active loans.</span>
+            ) : (
               <strong>{formatINR(loans.outstanding)}</strong>
-              <div className="muted">
-                across {loans.count} active {loans.count === 1 ? 'loan' : 'loans'}
-              </div>
-            </>
-          )}
-        </div>
+            )
+          }
+          note={
+            !loanError && loans && loans.count > 0
+              ? `across ${loans.count} active ${loans.count === 1 ? 'loan' : 'loans'}`
+              : undefined
+          }
+          tint="tint-amber"
+          icon="🏦"
+        />
       </div>
 
       <HomeReminders vehicle={vehicle} />
@@ -164,28 +169,32 @@ function Summary({ data, range, today }: { data: Loaded; range: DateRange; today
   return (
     <>
       <div className="dashboard-cards">
-        <div className="dashboard-card">
-          <p className="hint">Total spend · {label}</p>
-          <strong data-testid="dash-total">{formatINR(s.total)}</strong>
-          <div className="muted">
-            {s.count} {s.count === 1 ? 'expense' : 'expenses'}
-          </div>
-        </div>
-        <div className="dashboard-card">
-          <p className="hint">Cost per month</p>
-          <strong>{formatINR(s.costPerMonth)}</strong>
-          <div className="muted">
-            averaged over {s.monthsCounted} {s.monthsCounted === 1 ? 'month' : 'months'}
-          </div>
-        </div>
-        <div className="dashboard-card">
-          <p className="hint">Cost per km</p>
-          {s.costPerKm.status === 'ok' ? (
-            <strong>{formatINR(s.costPerKm.perKm)}/km</strong>
-          ) : (
-            <p className="muted">{s.costPerKm.message}</p>
-          )}
-        </div>
+        <StatCard
+          label={`Total spend · ${label}`}
+          value={<strong data-testid="dash-total">{formatINR(s.total)}</strong>}
+          note={`${s.count} ${s.count === 1 ? 'expense' : 'expenses'}`}
+          tint="tint-teal"
+          icon="₹"
+        />
+        <StatCard
+          label="Cost per month"
+          value={<strong>{formatINR(s.costPerMonth)}</strong>}
+          note={`averaged over ${s.monthsCounted} ${s.monthsCounted === 1 ? 'month' : 'months'}`}
+          tint="tint-blue"
+          icon="📅"
+        />
+        <StatCard
+          label="Cost per km"
+          value={
+            s.costPerKm.status === 'ok' ? (
+              <strong>{formatINR(s.costPerKm.perKm)}/km</strong>
+            ) : (
+              <span className="muted">{s.costPerKm.message}</span>
+            )
+          }
+          tint="tint-rose"
+          icon="⛽"
+        />
       </div>
 
       {s.count === 0 ? (
