@@ -75,3 +75,50 @@ describe('Calendar month view (Base design)', () => {
     expect(screen.getByRole('heading', { level: 2, name: 'September 2026' })).toBeInTheDocument();
   });
 });
+
+describe('Calendar views (Base design)', () => {
+  it('shows a week list with the reminders on their days', async () => {
+    renderCalendar();
+    await userEvent.click(screen.getByRole('button', { name: 'Week' }));
+    // The calendar opens on 1 Oct, in the week of 27 Sep; 15 Oct is two weeks on.
+    await userEvent.click(screen.getByRole('button', { name: 'Next week' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Next week' }));
+    const day = screen.getByRole('group', { name: '15/10/2026' });
+    expect(within(day).getByText('Insurance renewal')).toBeInTheDocument();
+    expect(within(day).getByText('PUC check')).toBeInTheDocument();
+  });
+
+  it('shows a day view for the anchor date', async () => {
+    renderCalendar();
+    await userEvent.click(screen.getByRole('button', { name: 'Day' }));
+    expect(screen.getByRole('heading', { level: 2, name: '01/10/2026' })).toBeInTheDocument();
+    expect(screen.getByText('Nothing due')).toBeInTheDocument();
+  });
+
+  it('steps the day view to the next date and its reminders', async () => {
+    renderCalendar();
+    await userEvent.click(screen.getByRole('button', { name: 'Day' }));
+    // 1 Oct to 15 Oct is fourteen steps.
+    for (let i = 0; i < 14; i++) {
+      await userEvent.click(screen.getByRole('button', { name: 'Next day' }));
+    }
+    expect(screen.getByRole('group', { name: '15/10/2026' })).toBeInTheDocument();
+    expect(screen.getByText('Insurance renewal')).toBeInTheDocument();
+  });
+
+  it('shows the year with a reminder count per month', async () => {
+    renderCalendar();
+    await userEvent.click(screen.getByRole('button', { name: 'Year' }));
+    expect(screen.getByRole('heading', { level: 2, name: '2026' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'October 2026, 2 reminders' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'January 2026, 0 reminders' })).toBeInTheDocument();
+  });
+
+  it('opens the month when a month in the year view is chosen', async () => {
+    renderCalendar();
+    await userEvent.click(screen.getByRole('button', { name: 'Year' }));
+    await userEvent.click(screen.getByRole('button', { name: 'November 2026, 0 reminders' }));
+    expect(screen.getByRole('heading', { level: 2, name: 'November 2026' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Month' })).toHaveAttribute('aria-pressed', 'true');
+  });
+});

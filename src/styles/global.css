@@ -800,3 +800,54 @@ select {
 .chip-done {
   background: var(--tint-teal);
 }
+
+.calendar-views {
+  display: flex;
+  gap: 6px;
+  margin-bottom: var(--space-2);
+  flex-wrap: wrap;
+}
+.calendar-views button[aria-pressed='true'] {
+  background: var(--primary);
+  color: var(--primary-contrast);
+  border-color: var(--primary);
+}
+.calendar-list {
+  display: grid;
+  gap: 6px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-2);
+}
+.calendar-row {
+  display: grid;
+  grid-template-columns: minmax(140px, 200px) 1fr;
+  gap: var(--space-2);
+  align-items: start;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+}
+.calendar-row:last-child {
+  border-bottom: 0;
+}
+.calendar-row .calendar-chip {
+  display: inline-block;
+  margin: 0 6px 6px 0;
+}
+.calendar-year {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--space-2);
+}
+.calendar-year-month {
+  display: grid;
+  gap: 4px;
+  text-align: left;
+  padding: var(--space-2);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  min-height: var(--tap);
+}
