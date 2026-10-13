@@ -24,6 +24,8 @@ How to update: add each user-visible change under `## [Unreleased]` in the right
 - Sidebar menu on desktop: Dashboard, Analytics, Expenses, Loans, Reminders, Calendar, Settings.
 - Analytics page (formerly Reports) has the new title and summary card.
 - Dashboard charts use the new colour palette. Monthly bars follow the theme colour.
+- Reminder rows show a status-coloured icon tile (Schedule list). Status text is unchanged.
+- Calendar has day, week, month and year views.
 
 ### Security
 
