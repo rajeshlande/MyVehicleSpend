@@ -297,5 +297,6 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
   - Acceptance: UAT report signed (`04-uat-report.md`); `CHANGELOG.md` and release notes updated; `main` merged; tag `v1.0.0`; production smoke test passes.
   - Verify: owner sign-off recorded; production URL works on Android and iPhone.
   - Deps: T34.
+  - Progress (2026-10-13, draft only): `CHANGELOG.md` created, mirroring the 1.0.0 section of `02-release-notes.md`. Corrected in the draft: 78 default categories (not about 100); the security claim now states the 2 moderate react-router advisories (new KI-05); iOS 16.4+ is marked for UAT confirmation. Not done: UAT sign-off, owner sign-off, `main` merge, tag `v1.0.0`, production smoke test (all blocked on T34).
 
 **CP-E (part 2)** — release complete.
