@@ -1,14 +1,17 @@
 import { formatINR } from '../../core/money/money';
 
-/** Palette for chart slices. Colours cycle when there are more groups than colours. */
-const PALETTE = [
-  '#2f6fed',
-  '#e8833a',
-  '#2fa37a',
-  '#c44d8b',
-  '#7c5cd6',
-  '#c9a227',
+/**
+ * Palette for chart slices, from the Base design (violet primary with teal, rose, amber, sky,
+ * violet and slate). Colours cycle when there are more groups than colours.
+ */
+export const PALETTE = [
+  '#5b56e8',
+  '#1fa187',
+  '#e0568f',
+  '#e9a23b',
   '#3aa3c9',
+  '#9b6bd6',
+  '#6cb36a',
   '#8a8f98',
 ];
 

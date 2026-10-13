@@ -422,9 +422,10 @@ select {
 }
 .dashboard-card {
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 0.9rem;
+  border-radius: var(--radius);
+  padding: 1rem;
   background: var(--bg);
+  box-shadow: 0 6px 18px rgba(20, 20, 43, 0.05);
 }
 .dashboard-card h2 {
   margin: 0 0 0.5rem;
@@ -487,7 +488,7 @@ select {
 }
 .bar {
   width: 100%;
-  background: #2f6fed;
+  background: var(--primary);
   border-radius: 4px 4px 0 0;
   min-height: 0;
 }
