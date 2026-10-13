@@ -283,6 +283,9 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
   - Acceptance: every STC executed on staging; results recorded in `docs/04-testing/02-system-test-cases.md` status column; each failure logged in `03-defect-tracking-log.md`.
   - Verify: all Must cases pass; zero open Critical or High defects.
   - Deps: T30–T32.
+  - Local run (done, 2026-10-13): all 77 STCs have a status with evidence. 61 Pass, 15 Partly, 1 Blocked, 0 Not run, 0 Fail. Each status line names its evidence. Failures found and fixed during T31 are logged as DTL-001 to DTL-003 (all Verified). Open Critical/High: 0.
+  - Still open (not done): the acceptance says "executed on staging". Staging needs a live Supabase project, a hosted deploy (T34) and real devices. Blocked until those exist: TC-AUTH-05 (reset email); all Partly cases that name staging; the hosted `curl -I` for TC-SEC-06; the Android and iPhone checks (TC-PWA-01, TC-PWA-04, TC-REM-05, TC-PWA-06); CSV in Excel (TC-RPT-03). Keep T33 unchecked until these are run on staging.
+  - Added status value "Partly" to the STC template header. It marks cases with local evidence for only part of the expected result.
 
 - [ ] **T34 — Staging deploy and smoke test** (S)
   - Acceptance: `develop` deploys to staging; migrations applied via `db.yml`; deployment smoke checklist (Deployment Guide §6) passes; keep-alive workflow enabled.
