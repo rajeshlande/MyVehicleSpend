@@ -9,6 +9,8 @@ export interface AuthState {
   session: Session | null | undefined;
   signIn: (input: SignInInput) => Promise<{ error: string | null }>;
   signUp: (input: SignUpInput) => Promise<{ error: string | null; needsConfirmation: boolean }>;
+  /** Sends a reset link. Gives the same answer whether or not the address has an account. */
+  resetPassword: (email: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
 }
 
@@ -88,6 +90,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           return { error: mapAuthError(error.message, error.code), needsConfirmation: false };
         // With email confirmation on, there is no session until the link is opened.
         return { error: null, needsConfirmation: data.session === null };
+      },
+      resetPassword: async (email) => {
+        const { error } = await getSupabase().auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/login`,
+        });
+        if (error?.code === 'over_email_send_rate_limit')
+          return { error: 'Too many requests. Wait a minute, then try again.' };
+        return { error: null };
       },
       signOut: async () => {
         // Saved data belongs to this account only, so it goes when the account signs out (FR-PWA-03).

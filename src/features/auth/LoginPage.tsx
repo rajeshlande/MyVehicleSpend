@@ -46,6 +46,9 @@ export function LoginPage() {
             required
           />
         </label>
+        <p className="auth-aside">
+          <Link to="/recover">Reset password</Link>
+        </p>
         {error && (
           <p id="auth-error" role="alert" className="form-error">
             {error}

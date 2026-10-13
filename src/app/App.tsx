@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from '../features/auth/AuthContext';
 import { LoginPage } from '../features/auth/LoginPage';
 import { SignUpPage } from '../features/auth/SignUpPage';
+import { RecoverPage } from '../features/auth/RecoverPage';
 import { RequireAuth } from '../features/auth/RequireAuth';
 import { AppShell } from '../components/AppShell';
 import { HomePage, MorePage } from '../features/placeholders/Screens';
@@ -48,6 +49,7 @@ export function App() {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/recover" element={<RecoverPage />} />
           <Route
             path="/*"
             element={

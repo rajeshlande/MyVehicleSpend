@@ -10,9 +10,10 @@ export function SignUpPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [confirmSent, setConfirmSent] = useState(false);
+  const [created, setCreated] = useState(false);
   const [busy, setBusy] = useState(false);
 
-  if (session) return <Navigate to="/" replace />;
+  if (session && !created) return <Navigate to="/" replace />;
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -22,7 +23,21 @@ export function SignUpPage() {
     setBusy(false);
     if (res.error) setError(res.error);
     else if (res.needsConfirmation) setConfirmSent(true);
-    // With a session returned, the AuthProvider update redirects to the app.
+    else setCreated(true);
+  }
+
+  if (created) {
+    return (
+      <main className="auth-page">
+        <h1>Account created</h1>
+        <p>Your account is ready. Go to Home to start tracking your vehicle spend.</p>
+        <p>
+          <Link to="/" className="btn-primary">
+            Go to Home
+          </Link>
+        </p>
+      </main>
+    );
   }
 
   if (confirmSent) {
