@@ -91,6 +91,7 @@ describe('sidebar navigation (Base design mapping)', () => {
       ['Expenses', '/expenses'],
       ['Loans', '/loans'],
       ['Reminders', '/reminders'],
+      ['Calendar', '/calendar'],
       ['Settings', '/more'],
     ]);
   });

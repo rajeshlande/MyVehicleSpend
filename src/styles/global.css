@@ -724,3 +724,79 @@ select {
 .sync-status [role='alert'] button {
   margin-top: var(--space-1);
 }
+
+/* Calendar (Base design). Chips use the tint palette; status is shown by colour and by text. */
+.calendar-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+.calendar-head h2 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+.calendar-grid {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.calendar-grid th {
+  padding: 8px 4px;
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-weight: 700;
+  background: var(--surface);
+}
+.calendar-day {
+  vertical-align: top;
+  height: 88px;
+  padding: 6px;
+  border-top: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+  font-size: 0.85rem;
+  overflow: hidden;
+}
+.calendar-day-muted {
+  color: var(--muted);
+  background: var(--page);
+}
+.calendar-day-today .calendar-date {
+  background: var(--primary);
+  color: var(--primary-contrast);
+  border-radius: 999px;
+  padding: 0 6px;
+}
+.calendar-date {
+  display: inline-block;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.calendar-chip {
+  display: block;
+  margin-top: 2px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background: var(--tint-blue);
+  color: var(--text);
+}
+.chip-overdue {
+  background: var(--tint-rose);
+}
+.chip-due_soon {
+  background: var(--tint-amber);
+}
+.chip-done {
+  background: var(--tint-teal);
+}

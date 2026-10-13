@@ -5,6 +5,7 @@ import { AuthProvider } from '../features/auth/AuthContext';
 import { LoginPage } from '../features/auth/LoginPage';
 import { SignUpPage } from '../features/auth/SignUpPage';
 import { WhatsNewPage } from '../features/about/WhatsNewPage';
+import { CalendarPage } from '../features/calendar/CalendarPage';
 import { RecoverPage } from '../features/auth/RecoverPage';
 import { RequireAuth } from '../features/auth/RequireAuth';
 import { AppShell } from '../components/AppShell';
@@ -71,6 +72,7 @@ export function App() {
                         <Route path="/loans" element={<LoansPage />} />
                         <Route path="/loans/:loanId" element={<LoanDetailPage />} />
                         <Route path="/reminders" element={<RemindersPage />} />
+                        <Route path="/calendar" element={<CalendarPage />} />
                         <Route path="/reports" element={<ReportsPage />} />
                         <Route path="/backup" element={<BackupPage />} />
                         <Route path="/account" element={<AccountPage />} />

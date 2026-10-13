@@ -16,7 +16,7 @@ const TABS = [
 /**
  * Sidebar (Base design). Template items mapped to existing features:
  * Dashboard→Home, Analytics→Reports, Expenses, Invoice→Loans, Schedule→Reminders, Settings→More.
- * Calendar, Messages and Notifications are added in later slices.
+ * Messages and Notifications are added in later slices.
  */
 const SIDE_LINKS = [
   { to: '/', label: 'Dashboard', icon: '▦' },
@@ -24,6 +24,7 @@ const SIDE_LINKS = [
   { to: '/expenses', label: 'Expenses', icon: '🧾' },
   { to: '/loans', label: 'Loans', icon: '🏦' },
   { to: '/reminders', label: 'Reminders', icon: '🗓' },
+  { to: '/calendar', label: 'Calendar', icon: '📆' },
   { to: '/more', label: 'Settings', icon: '⚙' },
 ] as const;
 
