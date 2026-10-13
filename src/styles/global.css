@@ -640,3 +640,18 @@ select {
   padding-bottom: 0;
   background: var(--bg);
 }
+
+/* Sync status (T29b): waiting and refused changes, shown above page content. */
+.sync-status {
+  margin-bottom: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.sync-status [role='alert'] {
+  color: var(--danger);
+}
+.sync-status [role='alert'] button {
+  margin-top: var(--space-1);
+}

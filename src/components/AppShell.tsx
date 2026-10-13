@@ -2,6 +2,7 @@ import { LastUpdatedNotice } from '../features/offline/LastUpdatedNotice';
 import type { ReactNode } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { OfflineBanner } from './OfflineBanner';
+import { SyncStatus } from '../features/sync/SyncStatus';
 import { useAuth } from '../features/auth/AuthContext';
 
 /** The five destinations from UI/UX §3. The + opens the quick-add sheet (placeholder until Phase 3). */
@@ -30,6 +31,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <div style={{ flex: 1, minWidth: 0 }}>
         <OfflineBanner />
         <main className="app-main">
+          <SyncStatus />
           <LastUpdatedNotice />
           {children}
         </main>

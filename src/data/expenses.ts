@@ -1,6 +1,7 @@
 import { readThrough } from './offlineCache';
 import { getSupabase } from './supabase';
 import { mapDbError } from './errors';
+import { saveOrQueue } from './writes';
 import type { ExpenseInput, PaymentMode } from '../core/expenses/schema';
 
 export interface Expense {
@@ -18,6 +19,8 @@ export interface Expense {
   notes?: string;
   receiptPaths: string[];
   source: string;
+  /** True for a provisional row shown while the save waits in the outbox (T29b). */
+  pending?: boolean;
 }
 
 export interface Category {
@@ -95,15 +98,60 @@ export function listExpenses(vehicleId: string): Promise<Expense[]> {
   return readThrough(`expenses|${vehicleId}`, () => fetchExpenses(vehicleId));
 }
 
-/** Creates an expense. The id is generated on the client so offline retries are safe (SDD §7). */
-export async function createExpense(input: ExpenseInput): Promise<Expense> {
-  const { data, error } = await getSupabase()
-    .from('expenses')
-    .insert({ id: crypto.randomUUID(), ...toRow(input), source: 'manual' })
-    .select(SELECT)
-    .single();
+/**
+ * Creates an expense with a client-made id (SDD §7). The add_expense RPC is idempotent by that id,
+ * so an outbox replay after a dropped response returns the same row and creates nothing (T29c).
+ */
+export async function createExpenseWithId(id: string, input: ExpenseInput): Promise<Expense> {
+  const { error } = await getSupabase().rpc('add_expense', {
+    p_id: id,
+    p_vehicle_id: input.vehicleId,
+    p_category_id: input.categoryId,
+    p_expense_date: input.expenseDate,
+    p_amount: input.amount,
+    p_gst_amount: input.gstAmount,
+    p_payment_mode: input.paymentMode,
+    p_vendor: input.vendor ?? null,
+    p_odometer_km: input.odometerKm ?? null,
+    p_notes: input.notes ?? null,
+  });
   if (error) throw mapDbError(error);
+  // Re-read with the category join, so the row matches what the lists show.
+  const { data, error: readError } = await getSupabase()
+    .from('expenses')
+    .select(SELECT)
+    .eq('id', id)
+    .single();
+  if (readError) throw mapDbError(readError);
   return toExpense(data as unknown as ExpenseRow);
+}
+
+/** Saves an expense, or queues it when offline. A queued save returns a provisional row marked pending. */
+export async function createExpense(input: ExpenseInput): Promise<Expense> {
+  const id = crypto.randomUUID();
+  return saveOrQueue({
+    op: 'expense.create',
+    id,
+    payload: input,
+    send: () => createExpenseWithId(id, input),
+    provisional: (): Expense => ({
+      id,
+      vehicleId: input.vehicleId,
+      categoryId: input.categoryId,
+      categoryGroup: '',
+      categoryName: '',
+      expenseDate: input.expenseDate,
+      amount: input.amount,
+      gstAmount: input.gstAmount,
+      paymentMode: input.paymentMode ?? null,
+      vendor: input.vendor ?? undefined,
+      odometerKm: input.odometerKm ?? undefined,
+      notes: input.notes ?? undefined,
+      receiptPaths: [],
+      source: 'manual',
+      pending: true,
+    }),
+  });
 }
 
 export async function updateExpense(id: string, input: ExpenseInput): Promise<Expense> {

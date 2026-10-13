@@ -71,7 +71,11 @@ export function QuickAddPage() {
     setSaving(true);
     try {
       const created = await createExpense(parsed.data);
-      setSaved(`Saved ${formatINR(created.amount)} · ${created.categoryName || 'expense'}`);
+      setSaved(
+        created.pending
+          ? `Saved on this phone · ${formatINR(created.amount)} · will sync when online`
+          : `Saved ${formatINR(created.amount)} · ${created.categoryName || 'expense'}`
+      );
       setAmount('');
     } catch (err) {
       setErrors({ form: err instanceof DataError ? err.message : 'Could not save. Try again.' });

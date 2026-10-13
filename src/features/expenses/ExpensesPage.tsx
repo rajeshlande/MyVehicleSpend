@@ -103,7 +103,11 @@ export function ExpensesPage() {
       setExpenses((prev) =>
         [created, ...(prev ?? [])].sort((a, b) => b.expenseDate.localeCompare(a.expenseDate))
       );
-      setNotice('Expense saved.');
+      setNotice(
+        created.pending
+          ? 'Saved on this phone. It will sync when you are online.'
+          : 'Expense saved.'
+      );
     }
     setView({ mode: 'list' });
   }
@@ -325,6 +329,7 @@ export function ExpensesPage() {
                       type="button"
                       className="btn-secondary"
                       onClick={() => setView({ mode: 'duplicate', expense: e })}
+                      disabled={e.pending}
                       aria-label={`Duplicate ${e.categoryName} on ${formatDMY(e.expenseDate)}`}
                     >
                       Duplicate
@@ -333,6 +338,7 @@ export function ExpensesPage() {
                       type="button"
                       className="btn-secondary"
                       onClick={() => setView({ mode: 'edit', expense: e })}
+                      disabled={e.pending}
                       aria-label={`Edit ${e.categoryName} on ${formatDMY(e.expenseDate)}`}
                     >
                       Edit
@@ -341,6 +347,7 @@ export function ExpensesPage() {
                       type="button"
                       className="btn-danger"
                       onClick={() => remove(e)}
+                      disabled={e.pending}
                       aria-label={`Delete ${e.categoryName} on ${formatDMY(e.expenseDate)}`}
                     >
                       Delete

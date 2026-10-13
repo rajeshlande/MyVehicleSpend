@@ -42,6 +42,25 @@ export function backoffMs(attempts: number): number {
   return 5_000 * 2 ** attempts;
 }
 
+export interface NewOutboxItem {
+  id: string; // client UUID, reused on every replay
+  userId: string;
+  op: string;
+  payload: unknown;
+}
+
+/** Queues a write under a client id the caller already holds (the same id is used for the provisional row). */
+export async function enqueueWithId(item: NewOutboxItem, now: number = Date.now()): Promise<void> {
+  await outboxDb().outbox.add({
+    ...item,
+    status: 'pending',
+    attempts: 0,
+    nextAttemptAt: now,
+    createdAt: now,
+    lastError: null,
+  });
+}
+
 export async function enqueue(
   userId: string,
   op: string,
@@ -49,18 +68,36 @@ export async function enqueue(
   now: number = Date.now()
 ): Promise<string> {
   const id = crypto.randomUUID();
-  await outboxDb().outbox.add({
-    id,
-    userId,
-    op,
-    payload,
-    status: 'pending',
-    attempts: 0,
-    nextAttemptAt: now,
-    createdAt: now,
-    lastError: null,
-  });
+  await enqueueWithId({ id, userId, op, payload }, now);
   return id;
+}
+
+/** Pending and failed counts for one user (T29b). */
+export async function outboxCounts(userId: string): Promise<{ pending: number; failed: number }> {
+  const items = await outboxDb().outbox.where('userId').equals(userId).toArray();
+  return {
+    pending: items.filter((i) => i.status === 'pending').length,
+    failed: items.filter((i) => i.status === 'failed').length,
+  };
+}
+
+/** Removes the items the user has been told could not be saved. */
+export async function discardFailed(userId: string): Promise<number> {
+  const failed = await failedItems(userId);
+  await outboxDb().outbox.bulkDelete(failed.map((i) => i.id));
+  return failed.length;
+}
+
+/** Tells the UI that the queue changed (a write was queued, sent, or discarded). */
+export function notifyOutboxChanged(): void {
+  if (typeof window !== 'undefined') window.dispatchEvent(new Event('outbox-changed'));
+}
+
+/** Subscribes to queue changes. Returns the unsubscribe function. */
+export function onOutboxChanged(listener: () => void): () => void {
+  if (typeof window === 'undefined') return () => {};
+  window.addEventListener('outbox-changed', listener);
+  return () => window.removeEventListener('outbox-changed', listener);
 }
 
 export async function pendingCount(userId: string): Promise<number> {

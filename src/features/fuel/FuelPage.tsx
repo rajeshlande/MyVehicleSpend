@@ -82,7 +82,11 @@ export function FuelPage() {
         onSubmit={(input) => addFuelLog({ ...input, categoryId: input.categoryId })}
         onSaved={(saved) => {
           setLogs((prev) => [saved, ...(prev ?? [])]);
-          setNotice('Fuel fill saved.');
+          setNotice(
+            saved.pending
+              ? 'Saved on this phone. It will sync when you are online.'
+              : 'Fuel fill saved.'
+          );
           setAdding(false);
         }}
         onCancel={() => setAdding(false)}

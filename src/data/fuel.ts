@@ -1,6 +1,7 @@
 import { readThrough } from './offlineCache';
 import { getSupabase } from './supabase';
 import { mapDbError } from './errors';
+import { saveOrQueue } from './writes';
 import type { FuelInput } from '../core/fuel/schema';
 
 /** Fuel fill as used in the UI (camelCase). `litres` is null for EV fills; `energyKwh` for EVs only. */
@@ -17,6 +18,8 @@ export interface FuelLog {
   isFullTank: boolean;
   station?: string;
   paymentMode?: string;
+  /** True for a provisional row shown while the save waits in the outbox (T29b). */
+  pending?: boolean;
 }
 
 interface FuelRow {
@@ -76,9 +79,12 @@ export function listFuelLogs(vehicleId: string): Promise<FuelLog[]> {
  * Logs a fill and its expense in one call (add_fuel_log, migration 0009).
  * The client id makes retries safe (TC-PWA-05).
  */
-export async function addFuelLog(input: FuelInput & { categoryId: string }): Promise<FuelLog> {
+export async function addFuelLogWithId(
+  id: string,
+  input: FuelInput & { categoryId: string }
+): Promise<FuelLog> {
   const { data, error } = await getSupabase().rpc('add_fuel_log', {
-    p_id: crypto.randomUUID(),
+    p_id: id,
     p_vehicle_id: input.vehicleId,
     p_filled_on: input.filledOn,
     p_odometer_km: input.odometerKm,
@@ -92,4 +98,32 @@ export async function addFuelLog(input: FuelInput & { categoryId: string }): Pro
   });
   if (error) throw mapDbError(error);
   return toFuelLog(data as unknown as FuelRow);
+}
+
+/** Saves a fuel fill, or queues it when offline. A queued save returns a provisional row marked pending. */
+export async function addFuelLog(input: FuelInput & { categoryId: string }): Promise<FuelLog> {
+  const id = crypto.randomUUID();
+  return saveOrQueue({
+    op: 'fuel.create',
+    id,
+    payload: input,
+    send: () => addFuelLogWithId(id, input),
+    provisional: (): FuelLog => {
+      const quantity = input.litres ?? input.energyKwh ?? 0;
+      return {
+        id,
+        vehicleId: input.vehicleId,
+        filledOn: input.filledOn,
+        odometerKm: input.odometerKm,
+        litres: input.litres ?? undefined,
+        energyKwh: input.energyKwh ?? undefined,
+        pricePerUnit: input.pricePerUnit,
+        totalAmount: Math.round(quantity * input.pricePerUnit * 100) / 100,
+        isFullTank: input.isFullTank,
+        station: input.station ?? undefined,
+        paymentMode: input.paymentMode ?? undefined,
+        pending: true,
+      };
+    },
+  });
 }

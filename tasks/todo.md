@@ -230,17 +230,19 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
   - Verify notes: Dexie store `snapshots` (`my-vehicle-spend-cache`), keys scoped by user id. Six reads go through `readThrough`: expenses, categories, fuel, loans, loan payments, reminders. Only the `NETWORK` error code falls back to the saved copy; server errors are always shown. The app shell shows "Showing saved data. Last updated DD/MM/YYYY, HH:MM" (IST) when any read is from the cache. Sign-out clears the cache. Tests: offline cache (8), real `listExpenses` online/offline with a stubbed client (2), IST formatting (1), notice (3). Full gate: 431/431 across 62 files; lint, format and typecheck clean.
   - Caveats: TC-PWA-03 is verified at the data and UI level only. A real dashboard check against live data is blocked on staging credentials. Writes still need a connection until the outbox ships (T29b).
 
-- [ ] **T29b — Outbox and sync engine** (L → keep to one slice)
-  - Slice 1 done (engine and store only): `src/data/outbox.ts` (Dexie `my-vehicle-spend-outbox`, keyed by client UUID, per user). Replays oldest first. Stops at the first item still backing off. Back-off 10/20/40/80 s. Gives up after 5 network attempts. Server rejections are kept as failed and not retried. Tests: 9 in `src/data/outbox.test.ts`. Full gate 440/440 across 63 files.
-  - Still open for T29b: write paths (expense and fuel create) queue when offline; replay on `online` and on app open; pending badge UI; TC-PWA-04 check. Open decision: sign-out with items still pending. Current behaviour: the outbox is not cleared, so this data is kept for the same account only. Needs an owner decision before the badge ships.
+- [x] **T29b — Outbox and sync engine** (L → split into slices)
   - Acceptance: FR-PWA-04, 05; offline inserts stored in `outbox`; replay on `online` and on app open; badge with pending count; retries with back-off, max 5 (NFR-REL-02).
   - Verify: TC-PWA-04 (expense and fuel rows appear in Supabase, no duplicates).
   - Deps: T29a, T16a.
-
-- [ ] **T29c — Idempotent retry safety** (S)
+  - Verify notes (slice 1, `cf7f0cc`): `src/data/outbox.ts` (Dexie `my-vehicle-spend-outbox`, per user). Replays oldest first and stops at the first item still backing off. Back-off 10/20/40/80 s. Gives up after 5 network attempts. Server rejections are kept as failed and not retried. 9 tests.
+  - Verify notes (slice 2): `createExpense` and `addFuelLog` now go through `saveOrQueue` (`src/data/writes.ts`). Network failure or offline: the write is queued under its client UUID and a provisional row marked `pending` is returned. Replay (`src/data/sync.ts`) runs on `online` and on app open, through the same functions the online path uses. `SyncStatus` (in AppShell) shows the waiting count, refused changes with the server's reason, and a Discard button. Pending expense rows disable Duplicate, Edit and Delete. Tests: `src/data/sync.test.ts` (9, includes the lost-response case), `src/features/sync/syncStatus.test.tsx` (4). Full gate 469/469 across 68 files.
+  - Caveats: TC-PWA-04 is not verified live (blocked on migrations and staging). Provisional rows appear until the next page load, when the lists re-read the server. Receipts cannot be attached to a queued expense, and Edit is disabled until it syncs. Open decision: sign-out with items still pending. Current behaviour: the outbox is not cleared, so the items stay for the same account only. Needs an owner decision.
+- [x] **T29c — Idempotent retry safety** (S)
   - Acceptance: retries reuse the same client UUID; RPC `ON CONFLICT DO NOTHING` verified.
   - Verify: TC-PWA-05 (simulated drop after commit gives one row).
   - Deps: T29b.
+  - Verify notes: migration `0014_add_expense.sql` (`add_expense`: `INSERT … ON CONFLICT (id) DO NOTHING`, then returns the existing row; a foreign id is refused). `add_fuel_log` (0003/0009) already returns the existing row on a retry. Tests: `tests/db/add_expense.test.ts` (6, on PGlite: retry creates no second row, foreign id refused, vehicle ownership, amount rule, no sign-in). `src/data/sync.test.ts` simulates a committed save whose response is lost, and the replay gives one row, for expenses and fuel.
+  - Caveat: TC-PWA-05 is verified at the DB and client level. The live check needs the migrations applied to the project.
 
 **CP-D (part 2)** — backup, deletion, PWA install, offline queue.
 
