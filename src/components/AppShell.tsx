@@ -15,7 +15,7 @@ const TABS = [
 
 /**
  * Sidebar (Base design). Template items mapped to existing features:
- * Dashboard→Home, Analytics→Reports, Expenses, Invoice→Loans, Schedule→Reminders, Settings→More.
+ * Dashboard→Home, Analytics→Reports, Expenses, Invoice→Invoices (service bills, slice 5), Loans kept as its own item, Schedule→Reminders, Settings→More.
  * Messages and Notifications are added in later slices.
  */
 const SIDE_LINKS = [
@@ -23,6 +23,7 @@ const SIDE_LINKS = [
   { to: '/reports', label: 'Analytics', icon: '📈' },
   { to: '/expenses', label: 'Expenses', icon: '🧾' },
   { to: '/loans', label: 'Loans', icon: '🏦' },
+  { to: '/invoices', label: 'Invoices', icon: '📄' },
   { to: '/reminders', label: 'Reminders', icon: '🗓' },
   { to: '/calendar', label: 'Calendar', icon: '📆' },
   { to: '/more', label: 'Settings', icon: '⚙' },

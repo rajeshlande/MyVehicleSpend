@@ -15,6 +15,7 @@ import { BackupPage } from '../features/backup/BackupPage';
 import { AccountPage } from '../features/account/AccountPage';
 import { QuickAddPage } from '../features/expenses/QuickAddPage';
 import { FuelPage } from '../features/fuel/FuelPage';
+import { InvoicesPage } from '../features/invoices/InvoicesPage';
 import { ExpensesPage } from '../features/expenses/ExpensesPage';
 import { VehicleProvider } from '../features/vehicles/VehicleContext';
 import { VehiclesPage } from '../features/vehicles/VehiclesPage';
@@ -71,6 +72,7 @@ export function App() {
                         <Route path="/expenses" element={<ExpensesPage />} />
                         <Route path="/loans" element={<LoansPage />} />
                         <Route path="/loans/:loanId" element={<LoanDetailPage />} />
+                        <Route path="/invoices" element={<InvoicesPage />} />
                         <Route path="/reminders" element={<RemindersPage />} />
                         <Route path="/calendar" element={<CalendarPage />} />
                         <Route path="/reports" element={<ReportsPage />} />
