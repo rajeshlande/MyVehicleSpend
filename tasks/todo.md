@@ -250,10 +250,13 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
 
 ## Phase 9 — Hardening
 
-- [ ] **T30 — Security headers, CSP and secret checks** (S)
+- [x] **T30 — Security headers, CSP and secret checks** (S)
   - Acceptance: `public/_headers` with CSP, HSTS, nosniff, frame-ancestors none (Deployment Guide §3.1); no `service_role` in bundle; no `dangerouslySetInnerHTML`; tokens not logged.
   - Verify: TC-SEC-05, 06, 07 (XSS vendor name shown as text), 08; `npm audit --omit=dev` has no high or critical findings.
   - Deps: T27.
+  - Verify notes: `public/_headers` matches Deployment Guide §3.1 exactly. `tests/security/static.test.ts` (8): no `dangerouslySetInnerHTML`, no service role key in app source, no token/session/password in console calls, no innerHTML/eval, CSP directives, HSTS, nosniff, no-cache for sw.js and manifest. `src/features/expenses/xss.test.tsx` (1): hostile vendor and note render as text. Bundle: `grep service_role` finds nothing in `dist/`. Browser: all six signed-in screens render under the policy with 0 CSP violations and 0 console errors (served with the headers applied). Full gate 478/478 across 70 files.
+  - TC status: TC-SEC-05 verified. TC-SEC-06 header file verified locally. The hosted header is still to check after deploy (`curl -I`). TC-SEC-07 verified at component level, not yet in a browser. TC-SEC-08 static check only; the production console has not been checked for token strings.
+  - Dependencies: `npm audit --omit=dev` shows 2 moderate findings, none high or critical. Both are in react-router 6.x (open redirect via backslash, and an SSR-only deserialize issue). The app navigates only to fixed internal paths, and it is not server-rendered, so the impact is low. The fix is a breaking upgrade to react-router 7. Accepted for v1.0; upgrade planned after T35.
 
 - [ ] **T31 — Accessibility and responsive pass** (S)
   - Acceptance: labels on all inputs; contrast ≥ 4.5:1 in both themes; keyboard path for add-expense; axe-core shows zero critical violations.
