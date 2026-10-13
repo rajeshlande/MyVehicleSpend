@@ -1,0 +1,19 @@
+# Keeps the free Supabase projects from pausing (Deployment Guide §4.4). Pings staging and production.
+name: Keep Supabase alive
+on:
+  schedule:
+    - cron: '0 3 */3 * *' # every 3 days at 03:00 UTC
+  workflow_dispatch:
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        env: [STAGING, PROD]
+    steps:
+      - name: Ping ${{ matrix.env }}
+        env:
+          URL: ${{ matrix.env == 'STAGING' && secrets.VITE_SUPABASE_URL_STAGING || secrets.VITE_SUPABASE_URL_PROD }}
+          KEY: ${{ matrix.env == 'STAGING' && secrets.VITE_SUPABASE_ANON_KEY_STAGING || secrets.VITE_SUPABASE_ANON_KEY_PROD }}
+        run: |
+          curl -fsS -o /dev/null -w "%{http_code}\n" "$URL/rest/v1/" -H "apikey: $KEY"

@@ -1,0 +1,30 @@
+# Frontend deploy (Deployment Guide §4.3). develop → Cloudflare Pages preview (staging); main → production.
+name: Deploy frontend
+on:
+  push:
+    branches: [develop, main]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
+    env:
+      VITE_SUPABASE_URL: ${{ github.ref_name == 'main' && secrets.VITE_SUPABASE_URL_PROD || secrets.VITE_SUPABASE_URL_STAGING }}
+      VITE_SUPABASE_ANON_KEY: ${{ github.ref_name == 'main' && secrets.VITE_SUPABASE_ANON_KEY_PROD || secrets.VITE_SUPABASE_ANON_KEY_STAGING }}
+      VITE_APP_ENV: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npx vitest run
+      - run: npm run build
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=my-vehicle-spend --branch=${{ github.ref_name == 'main' && 'main' || 'staging' }}
