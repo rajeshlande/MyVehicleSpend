@@ -207,3 +207,21 @@ describe('CSV exports (FR-RPT-04, TC-RPT-03)', () => {
     expect(content).toContain('1,2026-01-05,8500.00');
   });
 });
+
+describe('Analytics page (Base design)', () => {
+  it('is titled Analytics, matching the sidebar', async () => {
+    api.listExpenses.mockResolvedValue([expense('a', '2026-04-02', 100, 'Fuel')]);
+    renderPage();
+    expect(await screen.findByRole('heading', { level: 1, name: 'Analytics' })).toBeInTheDocument();
+  });
+
+  it('shows the period total as a stat card with a tinted icon tile', async () => {
+    api.listExpenses.mockResolvedValue([expense('a', '2026-04-02', 100, 'Fuel')]);
+    renderPage();
+    const summary = await screen.findByRole('region', { name: 'Period summary' });
+    const tile = summary.querySelector('.stat-icon');
+    expect(tile).not.toBeNull();
+    expect(tile).toHaveAttribute('aria-hidden', 'true');
+    expect(within(summary).getByTestId('report-total')).toHaveTextContent('₹100.00');
+  });
+});

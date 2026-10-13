@@ -1,3 +1,4 @@
+import { StatCard } from '../dashboard/StatCard';
 import { useEffect, useState } from 'react';
 import { useVehicles } from '../vehicles/VehicleContext';
 import { listExpenses, type Expense } from '../../data/expenses';
@@ -41,7 +42,7 @@ export function ReportsPage() {
   if (!activeVehicle) {
     return (
       <>
-        <h1>Reports</h1>
+        <h1>Analytics</h1>
         <EmptyState title="Add a vehicle first">
           <p>Reports are for one vehicle. Add your car or bike to start.</p>
         </EmptyState>
@@ -140,7 +141,7 @@ function VehicleReports({
   return (
     <>
       <div className="page-head">
-        <h1>Reports</h1>
+        <h1>Analytics</h1>
       </div>
       <p className="muted">{registrationNo}</p>
 
@@ -183,13 +184,13 @@ function VehicleReports({
             return (
               <>
                 <section aria-label="Period summary" className="dashboard-cards">
-                  <div className="dashboard-card">
-                    <p className="hint">Total spend · {periodLabel}</p>
-                    <strong data-testid="report-total">{formatINR(s.total)}</strong>
-                    <div className="muted">
-                      {s.count} {s.count === 1 ? 'expense' : 'expenses'}
-                    </div>
-                  </div>
+                  <StatCard
+                    label={`Total spend · ${periodLabel}`}
+                    value={<strong data-testid="report-total">{formatINR(s.total)}</strong>}
+                    note={`${s.count} ${s.count === 1 ? 'expense' : 'expenses'}`}
+                    tint="tint-teal"
+                    icon="₹"
+                  />
                 </section>
 
                 {s.count === 0 ? (
