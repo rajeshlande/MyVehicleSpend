@@ -466,17 +466,17 @@
 ### TC-UI-03 — Dark mode (NFR-USE-03)
 
 - **Expected:** Contrast ≥ 4.5:1 for body text; charts readable.
-- **Status:** Not run
+- **Status:** Verified (T31). Contrast checked by tests/a11y/contrast.test.ts in both themes; axe scan covers charts with sample data.
 
 ### TC-UI-04 — Keyboard navigation (Design §8)
 
 - **Expected:** Full add-expense flow completable with keyboard on desktop.
-- **Status:** Not run
+- **Status:** Verified (T31). Keyboard-only save verified in Chromium with scripts/keyboard-check.mjs (stub backend).
 
 ### TC-UI-05 — Screen reader labels (Design §8)
 
 - **Expected:** axe-core scan shows zero critical violations.
-- **Status:** Not run
+- **Status:** Verified (T31). Zero critical and zero serious axe violations across 26 pages (scripts/a11y-scan.mjs, both themes).
 
 ### TC-UI-06 — Responsive 320 px (NFR-PERF/Compat)
 

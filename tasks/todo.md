@@ -258,10 +258,12 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
   - TC status: TC-SEC-05 verified. TC-SEC-06 header file verified locally. The hosted header is still to check after deploy (`curl -I`). TC-SEC-07 verified at component level, not yet in a browser. TC-SEC-08 static check only; the production console has not been checked for token strings.
   - Dependencies: `npm audit --omit=dev` shows 2 moderate findings, none high or critical. Both are in react-router 6.x (open redirect via backslash, and an SSR-only deserialize issue). The app navigates only to fixed internal paths, and it is not server-rendered, so the impact is low. The fix is a breaking upgrade to react-router 7. Accepted for v1.0; upgrade planned after T35.
 
-- [ ] **T31 — Accessibility and responsive pass** (S)
+- [x] **T31 — Accessibility and responsive pass** (S)
   - Acceptance: labels on all inputs; contrast ≥ 4.5:1 in both themes; keyboard path for add-expense; axe-core shows zero critical violations.
   - Verify: TC-UI-03, 04, 05.
   - Deps: all UI tasks.
+  - Verify notes: `scripts/a11y-scan.mjs` (axe-core 4.14.0, exact devDependency) scans 11 signed-in and 2 signed-out routes in light and dark at 375 px against a stub-env build. Final run: 26 pages, 0 violations of any severity. Fixes: hero gradient darkened so white text passes; "Add entry" button text; dashboard cards, report table borders, bar labels and sync banners moved to theme tokens (they were hard-coded white); light `--warn` darkened to `#8a5300` (white text on the offline banner was 4.24:1); category tint text darkened; headings no longer skip h2. `tests/a11y/contrast.test.ts` (8) computes the ratios from the real token files. `scripts/keyboard-check.mjs` drives Chromium through the add-expense form with Tab, arrow keys and Enter: 6/6 pass. Full gate: vitest 486/486 across 71 files; lint, prettier, tsc and build OK.
+  - TC status: TC-UI-03 verified (contrast in both themes; charts covered by the axe scan). TC-UI-04 verified in Chromium. TC-UI-05 verified (zero critical, zero serious). Not covered: TC-UI-06 (320 px) is a separate case, and the scan runs against stub data, not the live backend.
 
 - [ ] **T32 — Performance budget** (S)
   - Acceptance: initial JS ≤ 250 KB gzip; route-level lazy loading for Reports and Loans; dashboard with 5,000 rows ≤ 1.5 s.
