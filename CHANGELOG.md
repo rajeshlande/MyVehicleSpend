@@ -3,7 +3,15 @@
 All notable changes are listed here. Format: [Keep a Changelog](https://keepachangelog.com). Versions: [Semantic Versioning](https://semver.org).
 This file mirrors `docs/05-deployment-maintenance/02-release-notes.md`. Nothing is released yet; 1.0.0 is planned, not tagged.
 
+How to update: add each user-visible change under `## [Unreleased]` in the right section (Added, Changed, Deprecated, Removed, Fixed, Security). At release, rename `Unreleased` to the new version and date, set the same version in `package.json`, and add a new empty `Unreleased` section above it. `npm test` fails if the file and `package.json` disagree.
+
 ---
+
+## [Unreleased]
+
+### Added
+
+- Versioning and changelog: the app version comes from `package.json` and is shown in the app. The change history is in this file and is checked by the test suite.
 
 ## [1.0.0] — planned for 2026-11-26
 
