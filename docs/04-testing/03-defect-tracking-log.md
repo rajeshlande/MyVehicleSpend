@@ -1,11 +1,11 @@
 # Bug / Defect Track Log (DTL) — My Vehicle Spend
 
-| Field        | Value                                                        |
-| ------------ | ------------------------------------------------------------ |
-| Version      | 1.0                                                          |
-| Date created | 2026-10-11                                                   |
-| Owner        | Developer / tester                                           |
-| Status       | Open log, no defects logged yet (implementation not started) |
+| Field        | Value                                                                                |
+| ------------ | ------------------------------------------------------------------------------------ |
+| Version      | 1.0                                                                                  |
+| Date created | 2026-10-11                                                                           |
+| Owner        | Developer / tester                                                                   |
+| Status       | 3 defects logged in T31 (all fixed and verified locally). Staging run pending (T33). |
 
 ## 1. How to use
 
@@ -43,34 +43,17 @@
 
 ## 4. Defect register
 
-| ID  | Test case | Requirement | Severity | Priority | Environment | Summary                 | Status | Fix ref | Verified |
-| --- | --------- | ----------- | -------- | -------- | ----------- | ----------------------- | ------ | ------- | -------- |
-| —   | —         | —           | —        | —        | —           | _No defects logged yet_ | —      | —       | —        |
+| ID      | Test case | Requirement | Severity | Priority | Environment                     | Summary                                                                                                                                   | Status   | Fix ref | Verified                                                         |
+| ------- | --------- | ----------- | -------- | -------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------- | ---------------------------------------------------------------- |
+| DTL-001 | TC-UI-03  | NFR-USE-03  | Medium   | P1       | Local (Chromium, axe, PGlite)   | Dark mode: grey hint text, the account warning and the Home hero sat on hard-coded light backgrounds. Contrast below 4.5:1 (axe serious). | Verified | 7e7ad59 | Agent, local run, 2026-10-13. Owner re-check on staging pending. |
+| DTL-002 | TC-UI-03  | NFR-USE-03  | Medium   | P1       | Local (Chromium, contrast test) | Light mode: white text on the offline banner was 4.24:1 (warn colour #b26a00). Changed to #8a5300 (6.33:1).                               | Verified | 7e7ad59 | Agent, local run, 2026-10-13.                                    |
+| DTL-003 | TC-UI-05  | NFR-USE-03  | Low      | P2       | Local (Chromium, axe)           | Heading order: dashboard and reports sections jumped from h1 to h3 (axe moderate). Changed to h2.                                         | Verified | 7e7ad59 | Agent, local run, 2026-10-13.                                    |
 
-## 5. Example entry (template — delete when first real defect is logged)
-
-| Field       | Value                                                                                   |
-| ----------- | --------------------------------------------------------------------------------------- |
-| ID          | DTL-000 (example)                                                                       |
-| Test case   | TC-LOAN-02                                                                              |
-| Requirement | FR-LOAN-03                                                                              |
-| Severity    | High                                                                                    |
-| Priority    | P1                                                                                      |
-| Environment | Staging, Chrome 130, Windows 11                                                         |
-| Build       | `a1b2c3d`                                                                               |
-| Steps       | 1. Create loan ₹8,00,000 @ 9.25%, 60 months. 2. Open schedule. 3. Sum principal column. |
-| Expected    | Sum = 800000.00                                                                         |
-| Actual      | Sum = 799998.97                                                                         |
-| Root cause  | Last-row adjustment not applied                                                         |
-| Status      | Fixed                                                                                   |
-| Fix ref     | PR #12                                                                                  |
-| Verified    | Owner, 2026-10-20                                                                       |
-
-## 6. Metrics (update at each milestone)
+## 5. Metrics (update at each milestone)
 
 | Metric                    | Value |
 | ------------------------- | ----- |
-| Total defects             | 0     |
+| Total defects             | 3     |
 | Open Critical / High      | 0     |
 | Defect density (per KLOC) | —     |
 | Average time to fix       | —     |
