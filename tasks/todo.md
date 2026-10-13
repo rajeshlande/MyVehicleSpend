@@ -291,6 +291,7 @@ Test IDs refer to `docs/04-testing/02-system-test-cases.md`.
   - Acceptance: `develop` deploys to staging; migrations applied via `db.yml`; deployment smoke checklist (Deployment Guide §6) passes; keep-alive workflow enabled.
   - Verify: smoke checklist; `curl -I` shows CSP and HSTS.
   - Deps: T33.
+  - Progress (2026-10-13): workflows written from Deployment Guide §4 and parse as valid YAML: `deploy.yml` (develop → Pages staging, main → production), `db.yml` (develop → staging project; main → production; the guide's version only had main), `keep-alive.yml` (pings both projects every 3 days). Not run: there is no git remote and no `develop` branch, and no GitHub or Cloudflare secrets are set. `.env.local` points to a Supabase host marked `VITE_APP_ENV=local`, which is not confirmed as staging. Smoke checklist and `curl -I` not run. T34 stays open.
 
 - [ ] **T35 — UAT and release v1.0.0** (S)
   - Acceptance: UAT report signed (`04-uat-report.md`); `CHANGELOG.md` and release notes updated; `main` merged; tag `v1.0.0`; production smoke test passes.
