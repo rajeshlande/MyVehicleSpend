@@ -18,17 +18,17 @@ The Figma link could not be opened (it redirects to the Figma home page), so the
 
 ## Slices
 
-| #   | Slice                                                                                           | Status      |
-| --- | ----------------------------------------------------------------------------------------------- | ----------- |
-| 1   | Design tokens (palette, type, radius, cards). Login, Sign Up, Recover, Account created screens. | In progress |
-| 2   | App shell: sidebar with the template nav and the top bar. Mobile bottom bar kept.               | Planned     |
-| 3   | Dashboard (Home) and Analytics: stat cards, line and donut charts, recent orders, top products. | Planned     |
-| 4   | Calendar (day, week, month, year), Create Event modal, Schedule list. Reuses reminders.         | Planned     |
-| 5   | Invoices: list with status and bulk select, create invoice with preview and totals.             | Planned     |
-| 6   | Customers: list, add customer panel, customer detail panel with performance.                    | Planned     |
-| 7   | Products: product analytics, add product panel, top selling table.                              | Planned     |
-| 8   | Tasks: board, list and timeline views, filter, search, add task.                                | Planned     |
-| 9   | Messages: chat list (all, personal, teams) and conversation view.                               | Planned     |
-| 10  | Notifications and Settings screens, confirm dialog, dropdown menus.                             | Planned     |
+| #   | Slice                                                                                           | Status                                                                                                            |
+| --- | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| 1   | Design tokens (palette, type, radius, cards). Login, Sign Up, Recover, Account created screens. | Done                                                                                                              |
+| 2   | App shell: sidebar with the template nav and the top bar. Mobile bottom bar kept.               | Done                                                                                                              |
+| 3   | Dashboard (Home) and Analytics: stat cards, line and donut charts, recent orders, top products. | Done (Recent orders and top products wait for slices 5 and 7)                                                     |
+| 4   | Calendar (day, week, month, year), Create Event modal, Schedule list. Reuses reminders.         | Partly done: month view. Open: day, week and year views, Create event (needs a decision on events), Schedule list |
+| 5   | Invoices: list with status and bulk select, create invoice with preview and totals.             | Planned                                                                                                           |
+| 6   | Customers: list, add customer panel, customer detail panel with performance.                    | Planned                                                                                                           |
+| 7   | Products: product analytics, add product panel, top selling table.                              | Planned                                                                                                           |
+| 8   | Tasks: board, list and timeline views, filter, search, add task.                                | Planned                                                                                                           |
+| 9   | Messages: chat list (all, personal, teams) and conversation view.                               | Planned                                                                                                           |
+| 10  | Notifications and Settings screens, confirm dialog, dropdown menus.                             | Planned                                                                                                           |
 
 Each slice: failing test first, then implementation, then the full gate, then one commit. Accessibility (axe, contrast), the bundle budget and the keyboard check run again at the end.

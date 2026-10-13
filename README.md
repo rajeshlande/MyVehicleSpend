@@ -24,7 +24,8 @@ Start with [`docs/README.md`](docs/README.md) — it lists all 21 documents grou
 ## Status
 
 - Phase 0 (documentation): **complete (v1.0 drafts)**
-- Phase 1 (implementation): pending — follows the documents above.
+- Phase 1–9 (implementation): complete. Phase 8 has one open live check (T27). Phase 10 (testing and release) is open, pending staging and UAT.
+- Live site: GitHub Pages from `main` (see the deployment guide, §2.2a).
 
 ## Licence
 

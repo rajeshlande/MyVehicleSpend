@@ -12,6 +12,22 @@ How to update: add each user-visible change under `## [Unreleased]` in the right
 ### Added
 
 - Versioning and changelog: the app version comes from `package.json` and is shown in the app. The change history is in this file and is checked by the test suite.
+- What's new screen (`/whats-new`) shows this changelog in the app. More shows the version and build date.
+- Calendar (`/calendar`): month view of reminders on their due dates, with status colours. Reminders without a date are listed below.
+- Password recovery (`/recover`): sends a reset link. The answer is the same whether or not the email has an account.
+- Account-created step after sign-up.
+- Deployment to GitHub Pages from `main`, with the app served under the repository path.
+
+### Changed
+
+- New visual design (violet primary, soft grey page, rounded cards) across sign-in, sign-up, recovery, the dashboard and analytics.
+- Sidebar menu on desktop: Dashboard, Analytics, Expenses, Loans, Reminders, Calendar, Settings.
+- Analytics page (formerly Reports) has the new title and summary card.
+- Dashboard charts use the new colour palette. Monthly bars follow the theme colour.
+
+### Security
+
+- Production builds carry a content security policy as a meta tag, because GitHub Pages cannot set response headers. Frame blocking, HSTS and referrer headers are not set on Pages; see the deployment guide.
 
 ## [1.0.0] — planned for 2026-11-26
 

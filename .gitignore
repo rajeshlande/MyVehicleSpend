@@ -23,3 +23,9 @@ dev-dist/
 # Local backups & generated docs (never commit personal data dumps)
 backups/
 docs/generated/
+
+# Installed agent skills (tooling, not app code)
+.agents/
+.claude/
+agent/
+skills-lock.json
