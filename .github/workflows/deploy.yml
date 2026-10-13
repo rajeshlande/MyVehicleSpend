@@ -1,13 +1,22 @@
-# Frontend deploy to GitHub Pages (https://<owner>.github.io/<repo>/). Runs on push to main.
+# Frontend deploy to GitHub Pages (https://<owner>.github.io/<repo>/).
+# Runs on push to main (production) and develop (staging).
+#
+# One Pages site serves both apps, and each deploy replaces the whole site, so every run builds both:
+#   /<repo>/           production, built from the main branch, production Supabase project
+#   /<repo>/staging/   staging, built from the develop branch (the commit that triggered the run),
+#                      staging Supabase project
+# A push to develop therefore never changes what production serves, and a push to main never
+# changes the staging code.
+#
 # One-time setup: Settings → Pages → Source: GitHub Actions.
-# Repository variables (public values only, never the service_role key):
-#   VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY
-# The Supabase Auth URL configuration must list the Pages address (see docs/05-deployment-maintenance).
+# Production values: repository variables VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY (public values).
+# Staging values: repository secrets VITE_SUPABASE_URL_STAGING, VITE_SUPABASE_ANON_KEY_STAGING.
+# The Supabase Auth URL configuration must list the Pages address and /staging/ (see the deployment guide).
 name: Deploy frontend
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
   workflow_dispatch:
 
 permissions:
@@ -22,30 +31,63 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
-      VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
-      VITE_APP_ENV: production
-      # Project sites are served from /<repo>/, so the build must use that base path.
-      VITE_BASE_PATH: /${{ github.event.repository.name }}/
     steps:
+      # Staging code: the commit that triggered this run (develop on a develop push).
       - uses: actions/checkout@v4
+      # Production code: always main, checked out next to it.
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: prod
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            prod/package-lock.json
       - run: npm ci
+      # Quality gates run on the staging code, which is the code being tested.
       - run: npm run lint
       - run: npm run typecheck
       - run: npx vitest run
-      - run: npm run build
-      # GitHub Pages serves 404.html for unknown paths. A copy of the app shell lets deep links
-      # (for example /reports after a refresh) load the app and route client-side.
-      - run: cp dist/index.html dist/404.html
+
+      # Production build (from main).
+      - name: Build production
+        working-directory: prod
+        env:
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+          VITE_APP_ENV: production
+          # Project sites are served from /<repo>/, so the build must use that base path.
+          VITE_BASE_PATH: /${{ github.event.repository.name }}/
+        run: |
+          npm ci
+          npm run build
+
+      # Staging build (from develop), with its own base path and project.
+      - name: Build staging
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL_STAGING }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY_STAGING }}
+          VITE_APP_ENV: staging
+          VITE_BASE_PATH: /${{ github.event.repository.name }}/staging/
+        run: npm run build
+
+      # Assemble one site: production at the root, staging under /staging/.
+      - name: Assemble site
+        run: |
+          mkdir -p site/staging
+          cp -r prod/dist/. site/
+          cp -r dist/. site/staging/
+          # GitHub Pages serves 404.html for unknown paths. The production shell is a copy of
+          # index.html, so deep links (for example /reports after a refresh) load and route client-side.
+          cp site/index.html site/404.html
+
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: site
           # Unique per run attempt. A re-run would otherwise leave two artifacts with the same
           # name in one run, and deploy-pages rejects that.
           name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
